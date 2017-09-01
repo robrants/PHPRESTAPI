@@ -1,0 +1,345 @@
+<?php
+	class snmpCrud extends myOracle{
+		private $switchObj;
+		private $ports;
+		private $lags;
+		private $vlans;
+		private $stack;
+		use crudBuilder;
+		public function __construct($s){
+			parent::__construct();
+			$this->switchObj = $s;
+			//pull out each object array to be parsed
+			$this->ports = $this->switchObj->ports;
+			$this->lags = $this->switchObj->lags;
+			$this->vlans = $this->switchObj->vlan_services;
+			$this->stack = $this->switchObj->stack;
+			//Step one validate the network name
+			if($this->switchObj->network_name != $this->pullNetwork_name()){
+				$where = 'where switch_id = '.$this->switchObj->switch_id;
+				$update = array('network_name' => $this->switchObj->network_name);
+				$this->updateRecord('blackr.masterads',$update,$where);
+			}
+			//Step two process and validate the Local and remote Ports
+			$this->processPorts();
+			//Step Three process lags
+			$this->processLags();
+			//Step Four Process Vlan Services
+			$this->processVlan();
+			//Step Five Process Stacks
+			$this->processStack();
+			
+			
+		}
+		
+		private function addRecord($table,$data){			
+			$insert = $this->buildInsert($table,$data,0);
+			return $this->runInsert($insert);
+		}
+		
+		private function updateRecord($table,$data,$where){			
+			$insert = $this->buildUpdate($table,$data,$where);
+			return $this->runInsert($insert);
+		}
+		
+		private function pullNetwork_name(){
+			$sql = 'select network_name from blackr.masterads where switch_id = '.$this->switchObj->switch_id;
+			$r = $this->runQuery($sql);
+			while($row = oci_fetch_row($r)){
+				$network_name = $row[0];
+			}
+			return $network_name;
+		}
+
+		private function getSiteId($networkName){
+			//pull the switch_id from a given network name
+			$sql = "select switch_id from blackr.masterads where network_name = ".$networkName;			
+			$r = $this->runQuery($sql);
+			$row = oci_fetch_row($r);
+			return $row[0];
+		}
+		
+		//Pull the DB records for each object set
+		
+		private function pullLocalPorts(){
+			$sql = "select * from blackr.localports where switch_id = ".$this->switchObj->switch_id;
+			$r = $this->runQuery($sql);
+			$data = array();
+			while($row = oci_fetch_array($r)){
+				$rec = array('ifindex' 	=>$row['IFIDXID'],
+							'serial' 	=> $row['SERIAL'],
+							'port'		=> $row['PORT'],
+							'porttype'	=> $row['PORTTYPE'],
+							'descr'		=> $row['DESCR']);
+				array_push($data,$rec);
+			}
+			return $data;
+		}
+		
+		private function pullRemotePorts($ifindex){
+			$sql = "select * from blackr.remoteports where switch_id = ".$this->switchObj->switch_id." and local_ifindex = ".$ifindex;
+			$r = $this->runQuery($sql);
+			$data = array();
+			while($row = oci_fetch_array($r)){
+				$rec = array('local_switch'		=>$row['LOCAL_SWITCH_ID'],
+							'lldp_uid' 			=> $row['LLDP_UID'],
+							'local_ifindex'		=> $row['LOCAL_IFINDEX'],
+							'remote_ifindex'	=> $row['REMOTE_IFINDEX'],
+							'remote_switch_id'	=> $row['REMOTE_SWITCH_ID']);
+				array_push($data,$rec);
+			}
+			return $data;
+		}
+		
+		private function pullLags(){
+			$sql = "select * from blackr.lags where switch_id = ".$this->switchObj->switch_id;
+			$r = $this->runQuery($sql);
+			$data = array();
+			while($row = oci_fetch_array($r)){
+				$rec = array('lagifindex'	=> $row['IFINDEX'],
+							'lagnum'		=> $row['LAGNUM']);
+				array_push($data,$rec);
+			}
+			return $data;
+		}
+		
+		private function pullVlanServices(){
+			$sql = "select * from blackr.Service_vlan where switch_id = ".$this->switchObj->switch_id;
+			$data = array();
+			$r = $this->runQuery($sql);
+			while($row = oci_fetch_array($r)){
+				$rec = array('service' 	=>$row['SERVICE_ID'],
+							'vlan_tag'	=>$row['VLAN_TAG'],
+							'ifindex'	=> $row['IFINDEX']);
+				array_push($data,$rec);
+			}
+			return $data;
+		}
+		
+		private function pulllagstoports($lag){
+			$sql ="select * from lagstoports where lagifindex = ".$lag;
+			$data = array();
+			$r = $this->runQuery($sql);
+			while($row = oci_fetch_array($r)){
+				$rec = array('portifindex'	=>$row['PORTIFINDEX'],
+							'descr'			=> $row['DESCR']);
+				array_push($data,$rec);
+			}
+			return $data;
+		}
+		
+		private function pullStack(){
+			$sql = "select serial,mac,partnum,hardwareIndex from blackrswitchslot where switch_id = ".$this->switchObj->switch_id;
+			$data = array();
+			$r = $this->runQuery($sql);
+			$x=0;
+			while($row = oci_fetch_array($r)){
+				$x++;
+				$rec = array('position' => $x,
+							'serial' 	=> $row['SERIAL'],
+							'mac'		=> $row['MAC'],
+							'partnum'	=> $row['PARTNUM'],
+							'hrdidx'	=> $row['HARDWAREINDEX']);
+				array_push($data,$rec);
+			}
+			return $data;
+		}
+		
+		private function validateMngFootprint($footprint){
+			
+		}
+		
+		private function validateSDP(){
+			
+		}
+		
+		//Process and validate data adding and updating as needed
+		private function processPorts(){
+			$recset = $this->pullLocalPorts();
+			
+			foreach($this->ports as $p){
+				$localPort = array();
+				$remotePort = array();
+				if($p->port == NULL or $p->port == ''){
+					$port = explode(' ',$p->descr);
+					$positions = $explode('/',$port[1]); 
+				}else $positions = explode('/',$p->port);
+				foreach($this->stack as $s){
+					if($s->position == $positions[0]){
+						$localPort['serial'] = $s->serial;
+					}
+				}
+				$localPort['ifidxid'] = $p->portIfindex;
+				$localPort['port'] = implode('/',$positions);
+				$localPort['porttype'] = $p->portType;
+				$localPort['descr'] = $p->portDescr;
+				//Setup loop for comparing current port to db.
+				$found = 0;
+				$update = array();
+				foreach($recset as $rec){
+					$update = array();
+					if($localPort['ifidxid'] == $rec['ifindex']){
+						//We have a match
+						$found = 1;
+						if($localPort['port'] != $rec['port']) $update['port'] = $localPort['port'];
+						if($localPort['porttype'] != $rec['porttype']) $update['porttype'] = $localPort['porttype'];
+						if($localPort['descr'] != $rec['descr']) $update['descr'] = $localPort['descr'];
+						if($localPort['serial'] != $rec['serial']) $update['serial'] = $localPort['descr'];
+					}
+					if(count($update)> 0){
+						if($this->updateRecord('blackr.localports',$update)){
+							error_log('Updated Port',0);
+						}else error_log('Failed To Update Port',0);
+					}
+				}
+				if($found != 1){
+						if($this->addRecord(blackr.port_ifindex,$localPort)){
+							error_log('LocalPort Added',0);							
+						}else{
+							error_log('failed to add Local port',0); //change this to a local file for easy tracking of issues
+					}			
+				}
+				$remotePort = array('local_switch_id' =>$this->switchObj->switch_id,
+									'lldp_uid' =>$p->lldpUid,
+									'local_ifindex' => $p->portIfindex,
+									'remote_ifindex' =>$p->remoteIfindex,
+									'remote_ip' =>$p->remoteIP);
+				$remotePort['remote_switch_id'] = $this->getSiteId($p->remote_site_id);	
+				$remoteRecSet = $this->pullRemotePorts($localPort['ifidxid']);
+				//Setup Loop for remote update.
+				$remoteFound = 0;
+				$remoteUpdate = array();
+				foreach($remoteRecSet as $remote){					
+					if($remote['remote_ifindex'] = $remotePort['remote_ifindex']){
+						//We have a match
+						$remoteFound = 1;
+						if($remote['lldp_uid'] != $remotePort['lldp_uid']) $remoteUpdate['lldp_uid'] = $remotePort['lldp_uid'];
+						if($remote['remote_ip'] != $remotePort['remote_ip']) $remoteUpdate['remote_ip'] = $remotePort['remote_ip'];
+						if($remote['remote_switch_id'] != $remotePort['remote_switch_id']) $remoteUpdate['remote_switch_id'] = $remotePort['remote_switch_id'];
+					}
+					if($remoteFound == 1){
+						if($this->updateRecord('blackr.remotePorts',$remoteUpdate)) error_log('Remote Port Updated',0);
+						else error_log('Remote Port Failed to Update',0);
+					}
+				}
+				if(count($remoteUpdate) == 0){
+					if($this->addRecord(blackr.RemotePorts,$remotePort)){
+						error_log('Remote Port Added',0); //Move to local file for easy tracking
+					}else error_log('failed to add Remote port',0); //change this to a local file for easy tracking of issues
+				}
+			}
+		}
+		
+		private function processLags(){
+			$recset = $this->pullLags();			
+			foreach($this->lags as $l){
+				$found = 0;
+				$update = array();
+				foreach($recset as $rec){
+					if($rec['ifindex'] == $l->lagIfIndex){
+						//We have a match
+						$found = 1;
+						if($l->lagNum != $rec['lagnum']) $update['lagnum'] = $l->lagNum;
+					}
+				}
+				if($found == 1 && count($update) > 0){ //Update found switch or move on to ports
+					$where = 'switch_id = '.$this->switchObj->switch_id.' and lagifindex = '.$l->lagIfIndex;
+					if($this->updateRecord('blackr.lags',$update,$where)) error_log('Lag Updated',0);
+					else error_log('Failed to Update Lag',0);
+				}elseif($found == 0){
+					$lag = array('switch_id' => $this->switchObj->switch_id,'Ifindex' => $l->lagIfIndex,'lagnum' => $l->lagNum);
+					if($this->addRecord('blackr.lags',$lag)){
+						error_log('lag added successfully',0); //Move to seperate local file for better record keeping	
+					}else error_log('Lag failed to added',0);
+				}
+				//Lag management complete move to the lags ports	
+				$this->processLagtoPorts($l);
+			} //End Lag Loop
+		} //End Function
+		
+		private function processLagtoPorts($lag){
+			$lagportrec = $this->pulllagstoports($l->lagIfIndex);
+				foreach($lag->ports as $p){
+					$pfound = 0;
+					$pupdate = array();
+					foreach($lagportrec as $portrec){
+						if($portrec['portifindex'] == $portrec['portifindex']){
+							//match Found
+							$found = 1;
+							if($p['descr'] != $portrec['descr']) $pupdate['descr'] = $p['descr'];
+							break;
+						}
+					}
+					if($pfound == 1 && count($pupdate)>0){
+						$where = 'where lagifindex = '.$lag->lagIfIndex.' and portifindex = '.$p['portifindex'];
+						if($this->updateRecord('blackr.lagtoport',$pupdate,$where)) error_log('Lag to Port Updated',0);
+						else error_log('failed to update Lag to Port',0);
+					}elseif($pfound == 0){
+						$lagPort = array('lagIfIndex' => $lag['Ifindex'],'portIfIndex' => $p['portIFIndex'],'descr' => $p['descr']);
+						if($this->addRecord('blackr.lagtoports',$lagPort)){
+							error_log('Lag To Port Added',0);
+						}else error_log('Failed to Add Lag To Port',0);
+					} //End Insert Block					
+				}//End Ports to Lag Loop
+		}
+		
+		private function processVlan(){
+			$recset = $this->pullVlanServices();
+			//loop start for vlan services
+			foreach($this->vlans as $v){
+				//set found and update variables
+				$found = 0;
+				$update = array();
+				//Start data loop
+				foreach($recset as $rec){
+					if($v->ifindex == $rec['ifindex'] && $v->vlanTag == $rec['vlan_tag']){
+						//match found
+						$found = 1;						
+						if($rec['service_id'] != $v->service_id) $update['service_id'] = $v->service_id;
+						break;
+					}
+				}
+				if($found ==1 && count($update) > 0){
+					$where = 'ifindex = '.$v->ifindex.' and vlan_tag = '.$v->vlanTag;
+					if($this->updateRecord('blackr.vlanservices',$update,$where)) error_log('VlanService Updated',0);
+					else error_log('failed to update vlanServce',0);
+				}elseif($found == 0){
+					$vlan = array('switch_id' => $this->switchObj->switch_id,'ifindex' => $v->ifindex,'vlan_tag' => $v->vlanTag,'serviceId' => $v->serviceId);
+					if($this->addRecord('blackr.vlanservices',$vlan))error_log('VlanService Added',0);
+					else error_log('Failed to Add VlanService',0);
+				}
+			}
+		}
+		
+		private function processStack(){
+			$recset = $this->pullStack();
+			//build loop for chassis
+			foreach($this->stack as $s){
+				//setup found and update vars
+				$found = 0;
+				$update = array();
+				//setup loop for data
+				foreach($recset as $rec){
+					if($rec['hrdIndex'] == $s->hrdIndex or $rec['position'] == $s->position){
+						//match found
+						$found = 1;
+						if($rec['serial'] != $s->serial) $update['serial'] = $s->serial;
+						if($rec['partnum'] != $s->partNum) $update['partnum'] = $s->partnum;
+						if($rec['mac'] != $s->mac) $update['mac'] = $s->mac;
+						break;
+					}
+				}
+				// Check if we have an update
+				if($found == 1 && count($update) > 0){
+					$where = 'where switch_id = '.$this->switchObj->switch_id.' and (position = '.$s->position.' or hrdIndex = '.$s->hrdIndex.')';
+					if($this->updateRecord('blackr.switchslot',$update,$where)) error_log('Stack updated',0);
+					else error_log('Failed to update Stack',0);
+				}
+			}
+		}
+		
+		public function validateSwitch(){
+			
+		}
+	}
+?>

@@ -1,0 +1,18 @@
+<?php
+class serviceVlan{
+	public $serviceId;
+	public $ifindex;
+	public $vlanTag;
+	public $ispId;
+	public function __construct($serviceId,$ifIndex,$vlanTag,$isp=0){
+		$this->serviceId 	= $serviceId;
+		$this->ifindex 		= $ifIndex;
+		$this->vlanTag 		= $vlanTag;
+		$this->ispId 		= $isp;
+	}
+	
+	public function addISP($isp){
+		$this->ispId = $isp;
+	}
+}
+?>

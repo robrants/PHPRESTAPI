@@ -1,0 +1,32 @@
+<?php
+	include 'Common/myOracle.php';
+	//include 'Common/traits/crudBuilder.php';
+	$DB = new myOracle;
+	$DATAFILE = fopen('cust_firstPass.csv','r');
+	$data = array();
+	
+	while($record = fgetcsv($DATAFILE,0,',')){
+		array_push($data,$record);
+	}
+	fclose($DATAFILE);
+	
+	$keys ='CUSTOMERID,'.implode(',',$data[0]);
+	unset($data[0]);
+	foreach($data as $rec){
+		$vals = 'blackr.seq_custmerg.nextval';
+		$vals .= array_reduce($rec,function($carry,$item){
+						if(preg_match('/\'/',$item)){
+							$carry .= ",'".str_replace("'","''",$item)."'";						
+						}elseif(preg_match('/[a-zA-Z\.\:\-\_]/',$item)){
+							$carry .= ",'".$item."'";
+						}elseif($item == NULL || $item == ''){
+							$carry .= ",''";
+						}else $carry .= ",$item";
+						return $carry;
+					});
+		$sql = "insert into blackr.custmerge ($keys) values($vals)";
+		echo $sql."\n";
+		$DB->runInsert($sql);
+	}
+echo 'Done';
+?>

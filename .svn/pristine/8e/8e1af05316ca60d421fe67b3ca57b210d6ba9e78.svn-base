@@ -1,0 +1,59 @@
+<form>
+	<table class="table">
+		<tr>
+			<th>Serial Number</th>
+			<td><input type="text" ng-model="input.serial"></td>
+		</tr>
+		<tr>
+			<th>Switch Make/Model</th>
+			<td>
+				<select ng-model="input.model_id" ng-options="model.SWITCH_MODEL_ID as model.MM for model in mm"></select>
+			</td>
+		</tr>
+		<tr>
+			<th>MAC Address</th>
+			<td><input type="text" ng-model="input.mac" /></td>
+		</tr>
+		<tr>
+			<th>Red DCS</th>
+			<td><input type="text" ng-model="input.reddcs"></td>
+		</tr>
+		<tr>
+			<th>Yellow DCS</th>
+			<td><input type="text" ng-model="input.yellowdcs"></td>
+		</tr>
+		<tr>
+			<th>Red Port1</th>
+			<td><input type="text" ng-model="input.redport1"></td>
+		</tr>
+		<tr>
+			<th>Red Port2</th>
+			<td><input type="text" ng-model="input.redport2"></td>
+		</tr>
+		<tr>
+			<th>Yellow Port1</th>
+			<td><input type="text" ng-model="input.yellowport1"></td>
+		</tr>
+		<tr>
+			<th>Yellow Port2</th>
+			<td><input type="text" ng-model="input.yellowport2"></td>
+		</tr>
+		<tr>
+			<th>10 Gig License</th>
+			<td><select ng-model="input.teng_lic">
+				<option value="Y">Yes</option>
+				<option value="N">No</option>
+			</select></td>
+		</tr>
+		<tr>
+			<th>10 Gig Link</th>
+			<td><select ng-model="input.teng_link">
+				<option value="Y">Yes</option>
+				<option value="N">No</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td><button class="btn btn-sm btn-success" ng-click="ok();">Add/Update</button>
+		</tr>
+	</table>
+</form>

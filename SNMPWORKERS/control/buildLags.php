@@ -1,0 +1,100 @@
+<?php
+class buildLags extends snmpData{
+	
+	public function __construct(){
+		parent::__construct();
+	}
+	private $lags = array();
+	private $lagdata;
+	private $SNMP;
+	private $oids = array();
+	
+	private function parseIFIndex(){
+		foreach($this->lagdata as $key => $val){
+			$lag = new lagObj();
+			$tmp = explode('.',$key);
+			$lag->lagNum = array_pop($tmp);			
+			$tmp = explode(':',$val);
+			$lag->lagIfIndex = $tmp[1];
+			//echo $lag->lagIfIndex.'<br>';
+			//echo $lag->portDescr.'<br>';
+			array_push($this->lags,$lag);
+		}
+		//echo 'Total Lags: '.count($this->lags).'<br>';
+	}
+	
+	private function parseportDescr(){
+		
+		foreach($this->lagdata as $key => $val){
+			$t = explode('.',$key);
+			$portIF = array_pop($t);
+			$lagNum = array_pop($t);
+			$t = explode(':',$val);
+			//echo $tmp[1].'<br>';
+			$y = 0;	
+			foreach($this->lags as $l){
+				
+				if($l->lagNum == $lagNum){
+					$portInfo = array('portIFIndex' =>$portIF,'portDescr' =>$t[1]);
+					array_push($this->lags[$y]->ports,$portInfo);
+					
+				}
+				$y++;
+			}						
+		}		
+	}
+	
+	public function pullLag($switch){
+		//check parameter to see if it came in as part of API or as class method call in other interface
+		if(is_array($switch)){
+			$switchId = $switch[0];
+		}else $switchId = $switch;
+		//echo $switchId.'<br>';
+		$switchConn = $this->getSwitchConn($switchId); //get the host and community needed for this ADS
+		$this->SNMP = new SNMPDriver($switchConn['ip'],$switchConn['community']);
+		$oids = $this->getoids($switchConn['model'],'LAG%'); // pull the needed oids for the make/model of this switch
+		foreach($oids as $o){ //Ensure we run the OIDS in the correct order
+			switch($o['descr']){
+				case 'LAG IFINDEX':
+					$this->oids[1] = $o;
+				break;
+				case 'LAG LAGNUM':
+					$this->oids[0] = $o;
+				break;
+			}
+		}
+		//echo 'Total oids to run: '.count($this->oids).'<br><br>';
+		for($x=0; $x<count($this->oids); $x++){
+			if(!$this->lagdata = $this->SNMP->snmpGetter($this->oids[$x]['oid'])){ 
+				return -1;
+			} 
+			
+			if($this->lagdata === false) return -1;
+			switch($this->oids[$x]['descr']){
+				case 'LAG LAGNUM':
+					//echo 'Parsing IFIndex and Lag Nums<br>';
+					$this->parseIFIndex();
+				break;
+				case 'LAG IFINDEX':
+					//echo 'Parsing PortDescrs<br>';
+					$this->parseportDescr();
+				break;
+			}
+		}
+		
+		return $this->lags;
+		
+		/*echo 'Total Lags for this Switch: '.count($this->lags).'<br>';
+		foreach($this->lags as $l){			
+			echo 'lagIfIndex: '.$l->lagIfIndex.'<br>';
+			echo 'lagNum: '.$l->lagNum.'<br>';
+			foreach($l->ports as $p){
+				foreach($p as $key => $val){
+					echo $key.': '.$val.'<br>';
+				}
+			}
+			echo '<br><br>';
+		}*/
+	}
+}
+?>

@@ -1,0 +1,52 @@
+<?php
+	class buildChassis extends snmpData{
+		public function __construct(){
+			parent::__construct();
+		}
+		private $chassis;
+		private $devtype;
+		private $swData;
+		
+		private function parseMakeFirm(){
+			if($this->devtype == 1){
+				foreach($this->swData as $key => $val){
+					$data = explode(' ',$val);
+					$this->chassis->firmware = $data[1];
+					$tmp = array_slice($data,3,3);
+					$this->chassis->make = implode(' ',$tmp);
+				}
+			}elseif($this->devtype == 2){
+				foreach($this->swData as $key => $val){
+					$data = explode(' ',$val);
+					$mm = array_slice($data,1,2);
+					$this->chassis->make = implode(' ',$mm);
+					$this->chassis->firmware = $data[3];
+					
+				}
+			}			
+		}
+		
+		public function buildChassis($switch){
+			
+			$this->chassis = new chassisObj();
+			if(is_array($switch)){
+				$switchId = $switch[0];
+			}else $switchId = $switch;
+			$switchConn = $this->getSwitchConn($switchId); //get the host and community needed for this ADS
+			$this->devtype = $this->modelidToDevType($switchConn['model']);
+			$this->chassis->switch_id = $switchId;
+			$this->chassis->local_ip = $switchConn['ip'];	
+			$this->SNMP = new SNMPDriver($switchConn['ip'],$switchConn['community']);
+			$this->oids = $this->getoids($switchConn['model'],'CHASSIS%'); // pull the needed oids for the make/model of this switch
+			foreach($this->oids as $o){
+				
+				if(!$this->swData = $this->SNMP->snmpGetter($o['oid'])){
+					return -1;
+				}
+			}
+			$this->parseMakeFirm();
+			return $this->chassis;
+		}
+		
+	}
+?>

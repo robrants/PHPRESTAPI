@@ -1,0 +1,80 @@
+iso.3.6.1.2.1.2.2.1.11
+
+1.3.6.1.4.1.5504.2.5.42.1.12.1.1.(port#) -pull vlan on Zhone
+
+SNMPv2-SMI::enterprises.5504.2.5.42.1.12.1.1.2.[100] <- vlan = STRING: "eth1" <- port
+
+iso.3.6.1.2.1.2.2.1.8
+returns
+IF-MIB::ifOperStatus.2 = INTEGER: up(1) - eth1
+IF-MIB::ifOperStatus.3 = INTEGER: down(2) - eth2
+IF-MIB::ifOperStatus.4 = INTEGER: down(2) - eth3
+IF-MIB::ifOperStatus.5 = INTEGER: down(2) - eth4
+
+1.3.6.1.4.1.5504.2.5.41.1.4.1.1.8.1 - lists ports
+
+Returns
+SNMPv2-SMI::enterprises.5504.2.5.41.1.4.1.1.8.1.1 = STRING: "eth0"
+SNMPv2-SMI::enterprises.5504.2.5.41.1.4.1.1.8.1.2 = STRING: "eth1"
+SNMPv2-SMI::enterprises.5504.2.5.41.1.4.1.1.8.1.3 = STRING: "eth2"
+SNMPv2-SMI::enterprises.5504.2.5.41.1.4.1.1.8.1.4 = STRING: "eth3"
+SNMPv2-SMI::enterprises.5504.2.5.41.1.4.1.1.8.1.5 = STRING: "eth4"
+Parse Right side for eth1 - 4 (list of ports)
+
+iso.3.6.1.2.1.2.2.1.10 - inbytes
+IF-MIB::ifInOctets.[1] <- (-1 = port#) = Counter32: 4069856253 <- total bytes
+IF-MIB::ifInOctets.2 = Counter32: 3306244358
+
+iso.3.6.1.2.1.2.2.1.16 - outbytes
+IF-MIB::ifInOctets.[1] <- (-1 = port#) = Counter32: 4069856253 <- total bytes
+IF-MIB::ifInOctets.2 = Counter32: 3306244358
+
+
+iso.3.6.1.2.1.1.3.0 - uptime
+DISMAN-EVENT-MIB::sysUpTimeInstance = Timeticks: (977272320) [113 days, 2:38:43.20]
+
+iso.3.6.1.2.1.2.2.1.5 - speed
+returns
+IF-MIB::ifSpeed.[1] <-(-1 = port#) = Gauge32: speed in bytes ->[1000000000]
+IF-MIB::ifSpeed.2 = Gauge32: 100000000
+IF-MIB::ifSpeed.3 = Gauge32: 0
+IF-MIB::ifSpeed.4 = Gauge32: 0
+IF-MIB::ifSpeed.5 = Gauge32: 0
+IF-MIB::ifSpeed.6 = Gauge32: 0
+IF-MIB::ifSpeed.7 = Gauge32: 0
+IF-MIB::ifSpeed.8 = Gauge32: 0
+IF-MIB::ifSpeed.9 = Gauge32: 0
+
+
+
+addressid:######### ISP:XXXXX
+products
+product id Descr Exptectd vlan
+XXXX
+XXX
+XXX
+
+
+ONT-Tables
+
+ONT-Device
+address_id,
+mac PK,
+model_id,
+uptime
+
+ONT-Ports
+ont_mac FK PK
+port number
+speed
+up/down
+vlan number
+in bytes
+out bytes
+q_date PK
+
+ONT: Make Model Model MAC IP:###.###.###.### 
+port1 vlan up/down speed
+port2
+port3
+port4

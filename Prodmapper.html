@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="css/jquery.ui.theme.min.css" />
+<link rel="stylesheet" href="css/jquery.ui.core.min.css" />
+<link rel="stylesheet" href="css/bootstrap.min.css" />
+<link rel="stylesheet" href="css/bootstrap-theme.min.css" />
+<title>Untitled Document</title>
+</head>
+
+<body ng-app="mapper">
+	<div class="container" ng-controller="mapProduct">
+		<div class="row">
+			<table class="table table-compact">
+				<tr>
+					<th>Product Type</th>
+					<td><select ng-model="input.ptype">
+						<option value="1">Residential</option>
+						<option value="2">Business</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>ISP</td>
+					<td><select ng-model="input.isp" ng-change="pullProducts();">
+						<option ng-repeat="i in isps" value="{{i.isp_id}}">{{i.isp}}</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>New Product</td>
+					<td><select ng-model="input.newProd">
+							<option ng-repeat="np in newProdList" value="{{np.productid}}">{{np.product}}</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="row" style="overflow: scroll; height: 200px">
+			<table class="table table-compact">
+				<tr>
+					<th>Old Product</th>
+					<th>Selected</th>
+				</tr>
+				<tr ng-repeat="op in oldProdList track by $index">
+					<td>{{op.product}}</td>
+					<td><button ng-click="mapProd($index);" class="btn bnt-sm btn-success">Map</button></td>
+				</tr>
+			</table>
+		</div>		
+	</div>
+<!-- Latest compiled and minified JavaScript -->
+	<script src="js/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular-sanitize.js"></script>
+    <script src="js/ui-bootstrap-tpls-0.11.2.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/prodMapper.js"></script>
+</body>
+</html>

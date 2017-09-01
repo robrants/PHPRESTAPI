@@ -1,0 +1,65 @@
+<?php
+	
+	/*
+		loadup the needed dependencies from the global config file passing through the known class repositories.
+	
+	*/
+	include_once('../vendor/autoload.php');
+	include_once('config/global.php');
+	$classes = $globals['class'];
+	function loadclass($class){		
+		foreach($class as $c){			
+			$source = array('../Common/'.$c.'.php','data/'.$c.'.php','control/'.$c.'.php');			
+			foreach($source as $s){
+				//echo 'Check for file '.$s.'<br>';
+				if(file_exists($s)){
+					//echo $s."<br>";
+					require_once($s);
+				}
+			}
+		}
+	}
+	
+	loadclass($classes);
+
+	/**
+	* Pull the Request variable validate the application and verb being used
+	Request should be /Application/controller/verb/parms....
+	
+	*/
+
+	$request = $_GET['request'];
+	$API = explode('/',rtrim($request,'/'));
+	$API = array_slice($API,3);
+	$method = $_SERVER['REQUEST_METHOD'];
+	if($method == 'POST') $input = file_get_contents("php://input");
+	//print_r($API);
+
+	if(count($API) > 2){
+		
+		$class = $API[0];
+		$verb = $API[1];
+		$parms = array_slice($API,2);
+		//print_r($parms);
+	} else{
+		$class = $API[0];
+		$verb = $API[1];
+	}
+	//echo 'class: '.$class.'<br>';
+	//echo 'verb: '.$verb.'<br>';
+	if($myclass = new $class){
+		//echo 'Object of Class: '.$class.' Created<br>';
+		if(method_exists($myclass,$verb)){
+			if(isset($parms)){
+				//print_r($parms);
+				if(isset($input)) $results = json_encode($myclass->$verb($input,$parms)); //Always put posted data first
+				else $results = json_encode($myclass->$verb($parms));
+			}else{
+				if(isset($input)) $results = json_encode($myclass->$verb($input));
+				else $results = json_encode($myclass->$verb());
+			}
+			echo $results;
+		}else throw new Exception('Method '.$verb.' does not Exist',405);
+	}else throw new Exception('No Class by named '.$class,405);
+
+?>

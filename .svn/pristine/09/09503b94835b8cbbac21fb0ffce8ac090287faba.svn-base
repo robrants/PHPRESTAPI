@@ -1,0 +1,8 @@
+<?php
+class serviceVlan{
+	public $serviceId;
+	public $ifindex;
+	public $vlanTag;
+	public $ispId;	
+}
+?>

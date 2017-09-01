@@ -1,0 +1,214 @@
+<?php
+
+class buildPorts extends snmpData{
+	public function __construct(){
+		parent::__construct();
+	}	
+	private $ports = array();
+	private $remoteIF = array(); //Store results from call for the remoteIF data
+	private $remoteIPs = array(); // Store results from call for remote IP
+	private $remoteNetwork = array(); //Store results from call for remote network
+	private $remoteSDP = array();
+	private $remoteServiceID = array();
+	private $SNMP;
+	private $oids = array();
+	private $switchData;
+	
+	private function parsePorts(){
+		
+		foreach($this->switchData as $key =>$val){
+			$port = new portsObj();
+			$tmp = array();
+			$tmp = explode('.',$key);
+			//echo $tmp[1].'<br>';
+			$port->portIfindex = $tmp[1];
+			$tmp = array();
+			$tmp = explode(':',$val);
+			$tmp2 = explode(',',$tmp[1]);
+			if(count($tmp2) == 1){
+				$port->portDescr = $tmp[1];
+			}elseif(count($tmp2) == 2){
+				$port->port = $tmp2[0];
+				$port->portType = $tmp2[1];
+			}else{
+				$port->port = $tmp2[0];
+				$port->portType = $tmp2[1];
+				$port->portDescr = $tmp2[2];
+			}
+			/*echo 'portIfindex: '.$port->portIfindex.'<br>';
+			echo 'port: '.$port->port.'<br>';
+			echo 'portType: '.$port->portType.'<br>';
+			echo 'portDescr: '.$port->portDescr.'<br>';*/
+			array_push($this->ports,$port);			
+		}
+		unset($port);
+	}
+	
+	private function parseRemoteIfInx(){
+		foreach($this->switchData as $key => $val){
+			$tmp = explode('.',$key);
+			$rec['lldpuid'] = $tmp[10];
+			$rec['localIF'] = $tmp[11];
+			$tmp = array();
+			$tmp = explode(':',$val);
+			$rec['remoteIF'] = $tmp[1];
+			array_push($this->remoteIF,$rec);
+		}
+	}
+	
+	private function parseRemoteIP(){
+		foreach($this->switchData as $key => $val){
+			$tmp = explode('.',$key);
+			$rec['lldpuid'] = $tmp[10];
+			$rec['localIF'] = $tmp[11];
+			$rec['ip'] = implode('.',array_slice($tmp,-4));			
+			array_push($this->remoteIPs,$rec);
+		}
+		
+	}
+	
+	private function parseRemoteNetName(){
+		foreach($this->switchData as $key => $val){
+			$tmp = explode('.',$key);
+			$rec['lldpuid'] = $tmp[10];
+			$rec['localIF'] = $tmp[11];			
+			$tmp = array();
+			$tmp = explode(':',$val);
+			$rec['remoteSwitch'] = $tmp[1];
+			array_push($this->remoteNetwork,$rec);
+		}
+	}
+	
+	private function parseRemoteSDP(){
+		foreach($this->switchData as $key => $val){
+			$sdp = explode('.',$key);
+			$remote = explode(':',$val);
+			//Exception Code for new OID replacing .4 with .61
+			$remote[1] = rtrim($remote[1]);
+			$remote[1] = ltrim($remote[1]);
+			$r = explode(' ',$remote[1]);
+			//error_log(count($r).'total elements',0);
+			if(count($r) == 4){
+				//error_log('found values',0);
+				$remote[1] = hexdec($r[0]);
+				$remote[1] .= '.'.hexdec($r[1]);
+				$remote[1] .= '.'.hexdec($r[2]);
+				$remote[1] .= '.'.hexdec($r[3]);
+				error_log($remote[1],0);
+			}
+			//End of Exception Code
+			$data = array();
+			$data['sdp'] = array_pop($sdp);
+			$data['remoteIP'] = $remote[1];
+			array_push($this->remoteSDP,$data);
+		}
+	}
+	
+	private function convertSDP($s){
+		$total = 0;
+		$t = implode('.',$s);
+		//error_log($t.' value passed');
+		if(count($s)< 4) exit; //bad data
+		if($s[3] > 0) $total = $s[3];
+		if($s[2] > 0) $total += ($s[2] * 256);
+		if($s[1] > 0) $total += ($s[1] * 256);
+		if($s[0] > 0) $total += ($s[0] * 256);
+		//error_log($total.' new total amount',0);
+		return $total;
+	}
+	
+	private function parseRemoteServiceID(){
+		foreach($this->switchData as $key => $val){
+			$rec = array();
+			//error_log('pulled value '.$key,0);
+			$data = explode('.',$key);
+			$rec['svid'] = $data[10];
+			$sdpid = array_slice($data,11,4);			
+			$rec['sdp'] = $this->convertSDP($sdpid);
+			array_push($this->remoteServiceID,$rec);
+		}
+	}
+	
+	private function ConsolidatePortData(){
+		$x = 0;
+		foreach($this->ports as $p){
+			foreach($this->remoteIF as $r){
+				if($p->portIfindex == $r['localIF']){
+					$this->ports[$x]->lldpUid = $r['lldpuid'];
+					$this->ports[$x]->remoteIfindex = $r['remoteIF'];
+				}
+			}
+			foreach($this->remoteIPs as $ip){
+				if($ip['localIF'] == $p->portIfindex){
+					$this->ports[$x]->remoteIP = $ip['ip'];
+					//error_log(count($this->remoteSDP)."\n",0);
+					foreach($this->remoteSDP as $sdp){							
+						if($ip['ip'] == ltrim($sdp['remoteIP'])){							
+							$this->ports[$x]->sdp = $sdp['sdp'];
+							foreach($this->remoteServiceID as $sid){								
+								if($sdp['sdp'] == ltrim($sid['sdp'])){									
+									$this->ports[$x]->svid = $sid['svid'];
+								}
+							}
+						}
+					}
+				}				
+			}
+			foreach($this->remoteNetwork as $r){
+				if($r['localIF'] == $p->portIfindex){
+					$this->ports[$x]->remoteSwitchId = $r['remoteSwitch'];
+				}			
+			}
+			$x++;
+		}
+	}
+	
+	public function BuildPorts($switch,$firmware=0){
+		//check parameter to see if it came in as part of API or as class method call in other interface
+		if(is_array($switch)){
+			$switchId = $switch[0];
+			$fware = $switch[1];
+		}else {
+			$switchId = $switch;
+			$fware = $firmware;
+		}
+		
+		$switchConn = $this->getSwitchConn($switchId); //get the host and community needed for this ADS
+		$this->SNMP = new SNMPDriver($switchConn['ip'],$switchConn['community']);
+		$this->oids = $this->getoids($switchConn['model'],'PORTS%'); // pull the needed oids for the make/model of this switch
+		$this->oids = $this->pullExceptions($this->oids,$fware);
+		foreach($this->oids as $o){
+			$this->switchData = $this->SNMP->snmpGetter($o['oid']);
+			if($this->switchData === false) return -1;
+			switch($o['descr']){
+				case 'PORTS':
+					//echo 'Parsing Ports<br>';
+					$this->parsePorts();
+					//echo 'Total Ports: '.count($this->ports).'<br>';
+				break;
+				case 'PORTS REMOTE INDEX':
+					//echo 'Parsing Remote Index<br>';
+					$this->parseRemoteIfInx();
+				break;
+				case 'PORTS REMOTE IP':
+					//echo 'Parsing Remote IPs<br>';
+					$this->parseRemoteIP();
+				break;
+				case 'PORTS REMOTE NAME':
+					//echo 'Parsing Remote Names<br>';
+					$this->parseRemoteNetName();
+				break;
+				case 'PORTS SDP':
+					$this->parseRemoteSDP();
+				break;
+				case 'PORTS SDP SERVICEID':
+					$this->parseRemoteServiceID();
+				break;
+			}
+			
+		}
+		$this->ConsolidatePortData();						
+		return $this->ports;
+	}
+}
+?>

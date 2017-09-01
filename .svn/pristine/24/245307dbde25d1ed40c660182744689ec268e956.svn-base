@@ -1,0 +1,15 @@
+<?php
+return $globals = 
+	array('class' =>
+		  array('UtopiaErrors',
+				'Utopiamysql',
+				'myOracle',
+				'sysUtils',
+				'UtopiaDHCP',
+				'custCountFootprint',
+				'custbyswitch',
+			   'installQAReport',
+			   'dropFiberReport',
+			   'nonConnectRes')
+		 );
+?>

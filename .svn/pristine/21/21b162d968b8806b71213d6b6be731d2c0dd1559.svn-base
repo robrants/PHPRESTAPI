@@ -1,0 +1,85 @@
+<?php
+	class snmpCrud extends myOracle{
+		private $switchObj;
+		private $ports;
+		private $lags;
+		private $vlans;
+		private $stack;
+		use crudBuilder;
+		public function __construct($s){
+			parent::__construct();
+			$this->switchObj = $s;
+			//pull out each object array to be parsed
+			$this->ports = $this->switchObj->ports;
+			$this->lags = $this->switchObj->lags;
+			$this->vlans = $this->switchObj->vlan_services;
+			$this->stack = $this->switchObj->stack;
+			
+		}
+		
+		private function addRecord($table,$data){			
+			$insert = $this->buildInsert($table,$data,0);
+			return $this->runInsert($insert);
+		}
+		
+		public function getSiteId($networkName){
+			//pull the switch_id from a given network name
+			$sql = "select switch_id from blackr.masterads where network_name = ".$networkName;
+			
+			$r = $this->runQuery($sql);
+			$row = oci_fetch_row($r);
+			return $row[0];
+		}
+		
+		
+		//parse through data and insert it into both the local and remote ports tables
+		private function processPorts(){
+			
+			foreach($this->ports as $p){
+				$localPort = array();
+				$remotePort = array();
+				if($p->port == NULL or $p->port == ''){
+					$port = explode(' ',$p->descr);
+					$positions = $explode('/',$port[1]); 
+				}else $positions = explode('/',$p->port);
+				foreach($this->stack as $s){
+					if($s->position == $positions[0]){
+						$localPort['serial'] = $s->serial;
+					}
+				}
+				$localPorts['ifidxid'] = $p->portIfindex;
+				$localPorts['port'] = implode('/',$positions);
+				$localPort['porttype'] = $p->portType;
+				$localPort['descr'] = $p->portDescr;
+				if($this->addRecord(blackr.port_ifindex,$localPort)){
+					$remotePort = array('local_switch_id' =>$this->switchObj->switch_id,
+									'lldp_uid' =>$p->lldpUid,
+									'local_ifindex' => $p->portIfindex,
+									'remote_ifindex' =>$p->remoteIfindex,
+									'remote_ip' =>$p->remoteIP);				
+					$remotePort['remote_switch_id'] = $this->getSiteId($p->remote_site_id);	
+					if($this->addRecord(blackr.RemotePorts,$remotePort)){
+						error_log('Remote Port Added',0); //Move to local file for easy tracking
+					}else error_log('failed to add Remote port',0); //change this to a local file for easy tracking of issues
+				}else{
+					error_log('failed to add Local port',0); //change this to a local file for easy tracking of issues
+				}			
+			}
+		}
+		
+		private function processLags(){
+			foreach($this->lags as $l){
+				$lag = array('switch_id' => $this->switchObj->switch_id,'Ifindex' => $l->lagIfIndex,'lagnum' => $l->lagNum);
+				if($this->addRecord('blackr.lags',$lag)){
+					error_log('lag added successfully',0); //Move to seperate local file for better record keeping
+					foreach($l->ports as $p){						
+						$lagPort = array('switch_id' => $this->switchObj->switch_id,'lagIfIndex' => $lag['Ifindex'],'portIfIndex' => $p['portIFIndex']);
+						if($this->addRecord('blackr.lagstoports',$lagPort)){
+							error_log('LagToPort Record added successfully',0);
+						}else error_log('failed to add lagToPort Record',0);
+					}
+				}else error_log('Lag failed to added',0);
+			}			
+		}
+				
+	}

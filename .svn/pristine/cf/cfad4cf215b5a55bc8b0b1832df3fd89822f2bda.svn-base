@@ -1,0 +1,15 @@
+<?php
+class portsObj{
+	public $portIfindex;
+	public $port;
+	public $portType;
+	public $portDescr;
+	public $lldpUid;
+	public $remoteIP;
+	public $svid;
+	public $sdp;
+	public $remoteIfindex;
+	public $remoteSwitchId;
+		
+}
+?>

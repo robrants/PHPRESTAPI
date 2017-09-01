@@ -1,0 +1,58 @@
+<?php
+	trait crudBuilder {
+		function parseVals($item,$exceptions){
+			if(key($item) == $exceptions){
+				$carry .= ",'".$item."'";
+			} else return $item;
+			return $carry;
+		}
+		function buildInsert($table,$data,$pk,$exceptions=null){
+			$keys = '';
+			$vals = '';
+			if($pk != 0){
+				$keys = key($pk);
+				$vals = $pk[$keys];
+			}
+			$first = 0;
+			$keys .= implode(',',array_keys($data));
+			$vals .= array_reduce($data,function($carry,$item) use(&$first){
+						if(preg_match('/[a-zA-Z\.\:\-\_\/]/',$item)){
+							if($first == 0){
+								$carry .= "'".$item."'";
+								$first = 1;
+							}else {$carry .= ",'".$item."'";}
+						}else {
+							if($first == 0){
+								$carry .= "$item";
+								$first = 1;
+							}else{$carry .= ",$item";}
+						}
+						return $carry;
+					});
+			$insert = "insert into $table ($keys) values($vals)";
+			return $insert;
+		}
+		function buildUpdate($table,$data,$where){			
+			$keyvals;
+			
+			foreach($data as $key => $item){
+				
+				if(preg_match('/[a-zA-Z\.\:\-\_\/]/',$item)){
+					$item = "'".$item."'";	
+				}
+				
+				if (is_null($item) || $item == ' ' || $item == ''){
+					continue;
+				}elseif(isset($keyvals)){
+					$keyvals .= ",".$key."=".$item;
+				}else $keyvals = $key."=".$item;
+			}
+			$update = "update ".$table." set ".$keyvals.$where;
+			return $update;
+		}
+		function buildDelete($table,$where){
+			$delete = "delete from ".$table.$where;
+			return $delete;
+		}				
+	}
+?>

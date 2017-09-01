@@ -1,0 +1,5 @@
+<?php
+	return $globals = 
+		array('class' =>
+			  array('myOracle','Utopiamysql','CommonQueries','sysUtils','PHPTelnet','messaging','UtopiaDHCP','firmWareData','firmWare'));
+?>

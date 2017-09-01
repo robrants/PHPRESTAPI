@@ -1,0 +1,76 @@
+<?php
+class installQAReport extends myOracle{
+	private $data = array();
+	private $sysUtils; //for use of sysUtils Class
+	private $sql ="select 
+    					im.*,
+    					i1.installid,
+    					i2.issue_id,
+						case when i2.ISSUE_CAT_ID = 1008 then
+							'Installation is Clean'
+						else 'Install has issues'
+						end Install,
+						ic.DESCR Category,
+						i3.DESCR issue,
+						i2.notes issueNotes
+					from 
+						BLACKR.INSTALLDATA_MV im,
+						blackr.installations i1, 
+						blackr.install_issues i2,
+						blackr.issue_cat ic,
+						blackr.issue_detail i3
+					where
+						im.FSP_APPOINTMENT_ID = i1.FSP_APPOINTMENT_ID and
+						i1.installid = i2.INSTALLID and 
+						i2.ISSUE_CAT_ID = ic.ISSUE_CAT_ID and
+						i2.ISSUE_DETAIL_ID = i3.ISSUE_DETAIL_ID(+) and
+						i1.STATUS = 1 order by i1.installid";
+	
+	public function __construct(){
+		parent::__construct();
+		$this->sysUtils = new sysUtils();
+	}
+	
+	private function getData(){
+		$r = $this->runQuery($this->sql);
+		while($row = oci_fetch_array($r)){
+			$rec = array(
+						'install'				=> $row['INSTALL'],
+						'category'				=> $row['CATEGORY'],
+						'issue'					=> $row['ISSUE'],
+						'IssueNotes'			=> $row['ISSUENOTES'],
+						'order_id' 				=> $row['ORDER_ID'],
+						'address_id'			=> $row['ADDRESS_ID'],
+						'address'				=> $row['ADDRESS'],
+						'drop_type'				=> $row['DROP_TYPE'],
+						'status'				=> $row['STATUS'],
+						'subscriber'			=> $row['SUBSCRIBER'],
+						'startdate'				=> $row['STARTDATE'],
+						'start_time'			=> $row['START_TIME'],
+						'footprint_id'			=> $row['FOOTPRINT_ID'],
+						'customer'				=> $row['CUSTOMER'],
+						'serviceprovider'		=> $row['SERVICEPROVIDER'],
+						'data'					=> $row['DATA'],
+						'voice'					=> $row['VOICE'],
+						'video'					=> $row['VIDEO'],
+						'fsp_appointment_id'	=> $row['FSP_APPOINTMENT_ID'],
+						'order_list'			=> $row['ORDER_LIST'],
+						'fsp_provider'			=> $row['FSP_PROVIDED_ID'],
+						'tech_group'			=> $row['TECH_GROUP'],
+						'color'					=> $row['COLOR'],
+						'notes'					=> $row['NOTES']
+						);
+			array_push($this->data,$rec);
+		}
+		error_log('Total Records pulled '.count($this->data),0);
+	}
+	
+	public function buildReport(){
+		$this->getData();
+		$header = array('INSTALL','CATEGORY','ISSUE','ISSUE NOTES','ORDER_ID','ADDRESS_ID','ADDRESS','DROP_TYPE','STATUS','SUBSCRIBER','STARTDATE','START_TIME','FOOTPRINT_ID','CUSTOMER','SERVICE PROVIDER','DATA','VOICE','VIDEO','FSP_APPOINTMENT_ID','ORDER_LIST','FSP_PROVIDED_ID','TECH_GROUP','COLOR','NOTES');
+		$filename = 'InstallQAReport.csv';
+		$title = 'Install Quality Report';
+		$this->sysUtils->exportReport($filename,$this->data,$header,$title);
+	}
+}
+?>

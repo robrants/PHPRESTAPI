@@ -1,0 +1,7 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule /(.*)$ /Applications/Search/index.php?request=%{REQUEST_URI} [QSA,NC,L]
+</IfModule>

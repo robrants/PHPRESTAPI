@@ -1,0 +1,286 @@
+GPCUSTID,BBDDate,BBDate,BBAmount,BBTransDesc
+AVILES1563     ,25-Oct-12,1-Oct-12,30,Contract UIAL0538JS            
+BARFUSS1919    ,25-Oct-12,1-Oct-12,25,Contract UIA-242222-           
+OLSON52131     ,26-Jul-15,1-Jul-15,30,EPIV00000050306                
+BILLS1843      ,25-Sep-12,1-Sep-12,30,Contract UIAL8799DB            
+UIAOREM        ,31-Jan-17,1-Jan-17,30,Shumway52571 10 - YEAR         
+UIAOREM        ,31-Jan-17,1-Jan-17,30,Corbin52973 10 - Year          
+UIAOREM        ,30-Jan-17,1-Jan-17,30,Eastman53458 10 - YEAR         
+UIAOREM        ,30-Jan-17,1-Jan-17,30,Sorenson53273 10 - YEAR        
+UIAOREM        ,31-Jan-17,1-Jan-17,25,Harding4071 20 - YEAR          
+UIAOREM        ,31-Jan-17,1-Jan-17,25,Cragun54358 20 - YEAR          
+UIAOREM        ,31-Jan-17,1-Jan-17,30,Riser54398 10 - YEAR           
+UIAOREM        ,30-Jan-17,1-Jan-17,30,Azcuy54786 10 - YEAR           
+UIAOREM        ,31-Jan-17,1-Jan-17,30,Rich54968 10 - YEAR            
+UIAOREM        ,30-Jan-17,1-Jan-17,25,Beyer56280 20 - YEAR           
+UIAOREM        ,30-Jan-17,1-Jan-17,30,Lindsay56788 10 - YEAR         
+UIAOREM        ,30-Jan-17,1-Jan-17,25,Sewell53246 20 - YEAR          
+UIAOREM        ,31-Jan-17,1-Jan-17,25,Fruits58138 20 - YEAR          
+UIAOREM        ,31-Jan-17,1-Jan-17,25,Henry58166 20 - YEAR           
+UIAOREM        ,30-Jan-17,1-Jan-17,30,Soter55618 10 - YEAR           
+UIAOREM        ,30-Jan-17,1-Jan-17,30,Castro58380 10 - YEAR          
+UIAOREM        ,30-Jan-17,1-Jan-17,30,Stephenson58103 10 - YEAR      
+UIAOREM        ,31-Jan-17,1-Jan-17,25,Lallatin58622 20 - YEAR        
+UIAOREM        ,31-Jan-17,1-Jan-17,30,Muffler58982 10 - YEAR         
+UIAOREM        ,31-Jan-17,1-Jan-17,25,Scott55409 20 - YEAR           
+UIAOREM        ,31-Jan-17,1-Jan-17,25,Garces59207 20 - YEAR          
+POULSEN2311    ,25-Mar-13,1-Mar-13,25,Contract UIAR4552              
+PURCELL1661    ,25-Mar-13,1-Mar-13,30,Contract UIAL4957JC            
+REESE2328      ,25-Mar-13,1-Mar-13,25,Contract UIAR0523              
+RIGBY2336      ,25-Mar-13,1-Mar-13,25,Contract UIA-268071-           
+SAMUELSON1863  ,25-Mar-13,1-Mar-13,30,Contract UIAL3508BF            
+SISLER3631     ,25-Mar-13,1-Mar-13,30,Contract UIAL8665LM            
+SJERVEN2366    ,25-Mar-13,1-Mar-13,25,Contract UIAR4186              
+SMITH1595      ,25-Mar-13,1-Mar-13,30,Contract UIAL6713MB            
+SMITH4142      ,25-Mar-13,1-Mar-13,25,Contract UIAL8864AC            
+SMITH4142      ,25-Mar-13,1-Mar-13,25,Contract UIAR8864              
+GIRLS1664      ,25-Dec-12,1-Dec-12,30,Contract UIAL4632LM            
+GOLDSMITH1712  ,25-Dec-12,1-Dec-12,30,Contract UIAL1638SM            
+STEWART2521    ,25-Mar-13,1-Mar-13,39,Contract UIALTO3               
+STRONG3601     ,25-Mar-13,1-Mar-13,25,Contract UIAR2058              
+STUECK2495     ,25-Mar-13,1-Mar-13,25,Contract U2U34                 
+TAFT3462       ,25-Mar-13,1-Mar-13,25,Contract UIAR1675b             
+THEOBALD3065   ,25-Mar-13,1-Mar-13,25,Contract UIA-17-373            
+THOMPSON2406   ,25-Mar-13,1-Mar-13,25,Contract UIAR1259a             
+TOWNSEND1703   ,25-Mar-13,1-Mar-13,30,Contract UIAL5248SM            
+UIALINDON      ,1-Feb-19,1-Feb-19,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Mar-19,1-Mar-19,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Apr-19,1-Apr-19,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-May-19,1-May-19,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Jun-19,1-Jun-19,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Jul-19,1-Jul-19,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Aug-19,1-Aug-19,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Sep-19,1-Sep-19,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Oct-19,1-Oct-19,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Nov-19,1-Nov-19,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Dec-19,1-Dec-19,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Jan-20,1-Jan-20,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Feb-20,1-Feb-20,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Mar-20,1-Mar-20,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Apr-20,1-Apr-20,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-May-20,1-May-20,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Jun-20,1-Jun-20,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Jul-20,1-Jul-20,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Aug-20,1-Aug-20,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Sep-20,1-Sep-20,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Oct-20,1-Oct-20,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Nov-20,1-Nov-20,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Dec-20,1-Dec-20,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Jan-21,1-Jan-21,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Feb-21,1-Feb-21,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Mar-21,1-Mar-21,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Apr-21,1-Apr-21,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-May-21,1-May-21,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Jun-21,1-Jun-21,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Jul-21,1-Jul-21,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Aug-21,1-Aug-21,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Sep-21,1-Sep-21,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Oct-21,1-Oct-21,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Nov-21,1-Nov-21,30.38,Rasband549 10 - YEAR           
+UIAMIDVALE     ,1-Jun-17,1-Jun-17,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Jul-17,1-Jul-17,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Aug-17,1-Aug-17,25,Schofield877 20 - YEAR         
+OSWALD52050    ,26-Aug-15,1-Aug-15,30,EPIV00000052308                
+BABINCHAK53136 ,26-Aug-15,1-Aug-15,30,EPIV00000052319                
+SMITH52393     ,26-Apr-15,1-Apr-15,30,EPIV00000043011                
+NEWBURY5143    ,26-Apr-15,1-Apr-15,30,EPIV00000043239                
+JONES52201     ,26-Apr-15,1-Apr-15,30,EPIV00000043330                
+WARD1799       ,25-Mar-13,1-Mar-13,30,Contract UIAL1145BB            
+ZAPPITELL2477  ,25-Mar-13,1-Mar-13,25,Contract U2U16                 
+DAWSON4662     ,25-Mar-13,1-Mar-13,27.5,Contract UIAL2700JC            
+FIELDS2057     ,25-Mar-13,1-Mar-13,25,Contract UIAR9736              
+FLYNN4763      ,25-Mar-13,1-Mar-13,25,Contract UIA-298957-           
+GOODFELLO2088  ,25-Mar-13,1-Mar-13,25,Contract UIAR5958              
+KAGIE2170      ,25-Mar-13,1-Mar-13,25,Contract UIAR2074              
+LACAYO3566     ,31-Mar-13,1-Mar-13,25,Contract UIAR3566              
+UIAMURRAY      ,1-Mar-13,1-Mar-13,839.51,Contract UIA02024              
+STALLINGS2379  ,25-Mar-13,1-Mar-13,25,Contract UIAR1957              
+UIAMURRAY      ,1-Jun-20,1-Jun-20,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Jul-20,1-Jul-20,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Aug-20,1-Aug-20,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Sep-20,1-Sep-20,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Oct-20,1-Oct-20,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Nov-20,1-Nov-20,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Dec-20,1-Dec-20,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Jan-21,1-Jan-21,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Feb-21,1-Feb-21,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Mar-21,1-Mar-21,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Apr-21,1-Apr-21,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-May-21,1-May-21,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Jun-21,1-Jun-21,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Jul-21,1-Jul-21,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Aug-21,1-Aug-21,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Sep-21,1-Sep-21,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Oct-21,1-Oct-21,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Nov-21,1-Nov-21,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Dec-21,1-Dec-21,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Jan-22,1-Jan-22,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Feb-22,1-Feb-22,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Mar-22,1-Mar-22,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Apr-22,1-Apr-22,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-May-22,1-May-22,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Jun-22,1-Jun-22,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Jul-22,1-Jul-22,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Aug-22,1-Aug-22,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Sep-22,1-Sep-22,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Oct-22,1-Oct-22,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Nov-22,1-Nov-22,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Dec-22,1-Dec-22,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Jan-23,1-Jan-23,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Feb-23,1-Feb-23,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Mar-23,1-Mar-23,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Apr-23,1-Apr-23,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-May-23,1-May-23,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Jun-23,1-Jun-23,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Jul-23,1-Jul-23,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Aug-23,1-Aug-23,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Sep-23,1-Sep-23,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Oct-23,1-Oct-23,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Nov-23,1-Nov-23,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Dec-23,1-Dec-23,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Jan-24,1-Jan-24,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Feb-24,1-Feb-24,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Mar-24,1-Mar-24,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Apr-24,1-Apr-24,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-May-24,1-May-24,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Jun-24,1-Jun-24,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Jul-24,1-Jul-24,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Aug-24,1-Aug-24,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Sep-24,1-Sep-24,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Oct-24,1-Oct-24,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Nov-24,1-Nov-24,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Dec-24,1-Dec-24,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Jan-25,1-Jan-25,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Feb-25,1-Feb-25,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Mar-25,1-Mar-25,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Apr-25,1-Apr-25,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-May-25,1-May-25,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Jun-25,1-Jun-25,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Jul-25,1-Jul-25,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Aug-25,1-Aug-25,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Sep-25,1-Sep-25,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Oct-25,1-Oct-25,25,Simpson441 20 - YEAR           
+UIAMURRAY      ,1-Nov-25,1-Nov-25,25,Simpson441 20 - YEAR           
+TAYLOR52197    ,26-Apr-15,1-Apr-15,30,EPIV00000042761                
+COWAN1695      ,25-Mar-13,1-Mar-13,30,Contract UIA-63213-2           
+CRUZ5083       ,25-Mar-13,1-Mar-13,30,Contract UIAL2151JC            
+DULONG2565     ,25-Mar-13,1-Mar-13,30,Contract UIAL7286JF            
+FARMER5482     ,25-Mar-13,1-Mar-13,30,Contract UIAL0430SM            
+FOSTER1633     ,25-Mar-13,1-Mar-13,30,Contract UIAL7003SM            
+FRANDSEN2519   ,25-Mar-13,1-Mar-13,39,Contract UIALTO1               
+GIBSON1685     ,25-Mar-13,1-Mar-13,30,Contract UIA-300312-           
+HASLAM2126     ,25-Mar-13,1-Mar-13,25,Contract UIAR0841              
+HEINER1721     ,25-Mar-13,1-Mar-13,30,Contract UIAL7205LM            
+HESS1779       ,25-Mar-13,1-Mar-13,30,Contract UIA-270537-           
+HUGHES1841     ,25-Mar-13,1-Mar-13,30,Contract UIAL9189BF            
+JONES2168      ,25-Mar-13,1-Mar-13,25,Contract UIAR0813              
+KINLACHEE2177  ,25-Mar-13,1-Mar-13,25,Contract UIAR8395a             
+LOCKHART1646   ,25-Mar-13,1-Mar-13,30,Contract UIAL2672AC            
+LYMAN2209      ,25-Mar-13,1-Mar-13,25,Contract UIAR0860              
+MARTIN1816     ,25-Mar-13,1-Mar-13,30,Contract UIAL1293DH            
+MARTINEZ1880   ,25-Mar-13,1-Mar-13,30,Contract UIAL0023JC            
+MCCLUSKEY2225  ,25-Mar-13,1-Mar-13,25,Contract UIAR1492              
+MCRAE2230      ,25-Mar-13,1-Mar-13,25,Contract UIAR4680              
+MELTON1653     ,25-Mar-13,1-Mar-13,30,Contract UIAL9641RT            
+MILLER1844     ,25-Mar-13,1-Mar-13,30,Contract UIAL1850JC            
+MOORE1643      ,25-Mar-13,1-Mar-13,30,Contract UIAL5290JC            
+MORRIS2523     ,25-Mar-13,1-Mar-13,39,Contract UIALTO5               
+NIELSEN3503    ,25-Mar-13,1-Mar-13,30,Contract UIA-56827-4           
+NIELSON2265    ,25-Mar-13,1-Mar-13,25,Contract UIAR3456              
+UIAMIDVALE     ,1-Sep-23,1-Sep-23,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Oct-23,1-Oct-23,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Nov-23,1-Nov-23,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Dec-23,1-Dec-23,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Jan-24,1-Jan-24,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Feb-24,1-Feb-24,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Mar-24,1-Mar-24,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Apr-24,1-Apr-24,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-May-24,1-May-24,25,Schofield877 20 - YEAR         
+PHILLIPS51888  ,26-Jul-15,1-Jul-15,30,EPIV00000051036                
+UIAMIDVALE     ,1-Jun-24,1-Jun-24,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Jul-24,1-Jul-24,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Aug-24,1-Aug-24,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Sep-24,1-Sep-24,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Oct-24,1-Oct-24,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Nov-24,1-Nov-24,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Dec-24,1-Dec-24,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Jan-25,1-Jan-25,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Feb-25,1-Feb-25,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Mar-25,1-Mar-25,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Apr-25,1-Apr-25,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-May-25,1-May-25,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Jun-25,1-Jun-25,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Jul-25,1-Jul-25,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Aug-25,1-Aug-25,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Sep-25,1-Sep-25,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Oct-25,1-Oct-25,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Nov-25,1-Nov-25,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Dec-25,1-Dec-25,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Jan-26,1-Jan-26,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Feb-26,1-Feb-26,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Mar-26,1-Mar-26,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Apr-26,1-Apr-26,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-May-26,1-May-26,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Jun-26,1-Jun-26,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Jul-26,1-Jul-26,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Aug-26,1-Aug-26,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Sep-26,1-Sep-26,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Oct-26,1-Oct-26,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Nov-26,1-Nov-26,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Dec-26,1-Dec-26,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Jan-27,1-Jan-27,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Feb-27,1-Feb-27,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Mar-27,1-Mar-27,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Apr-27,1-Apr-27,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-May-27,1-May-27,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Jun-27,1-Jun-27,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Jul-27,1-Jul-27,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Aug-27,1-Aug-27,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Sep-27,1-Sep-27,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Oct-27,1-Oct-27,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Nov-27,1-Nov-27,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Dec-27,1-Dec-27,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Jan-28,1-Jan-28,25,Schofield877 20 - YEAR         
+UIAMIDVALE     ,1-Feb-28,1-Feb-28,25,Schofield877 20 - YEAR         
+OSWALD52050    ,26-Jul-15,1-Jul-15,30,EPIV00000049772                
+KING50946      ,26-Jul-15,1-Jul-15,30,EPIV00000049946                
+HARDING52237   ,26-Jul-15,1-Jul-15,30,EPIV00000049967                
+LEATHAM53074   ,26-Jul-15,1-Jul-15,30,EPIV00000050254                
+JENKINS52899   ,26-Apr-15,1-Apr-15,31.5,EPIV00000042829                
+RICE52511      ,26-Apr-15,1-Apr-15,30,EPIV00000042858                
+BLACK52364     ,26-Apr-15,1-Apr-15,30,EPIV00000042886                
+FRITZ52463     ,26-Apr-15,1-Apr-15,30,EPIV00000042956                
+BAILEY1914     ,25-Mar-13,1-Mar-13,2.62,Contract UIAR8522              
+BEAN1651       ,25-Mar-13,1-Mar-13,30,Contract UIAL5108BF            
+BILLS1843      ,25-Mar-13,1-Mar-13,30,Contract UIAL8799DB            
+BIRCH1800      ,25-Mar-13,1-Mar-13,30,Contract UIAL3543ET            
+BLACK2983      ,25-Mar-13,1-Mar-13,30,Contract UIAL4006JC            
+BRIDGE2781     ,25-Mar-13,1-Mar-13,30,Contract UIAL9741MB            
+CANO2741       ,25-Mar-13,1-Mar-13,30,Contract UIAL3254JC            
+HEATH53191     ,26-Jul-15,1-Jul-15,30,EPIV00000050734                
+UIALINDON      ,1-Jan-17,1-Jan-17,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Feb-17,1-Feb-17,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Mar-17,1-Mar-17,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Apr-17,1-Apr-17,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-May-17,1-May-17,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Jun-17,1-Jun-17,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Jul-17,1-Jul-17,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Aug-17,1-Aug-17,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Sep-17,1-Sep-17,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Oct-17,1-Oct-17,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Nov-17,1-Nov-17,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Dec-17,1-Dec-17,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Jan-18,1-Jan-18,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Feb-18,1-Feb-18,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Mar-18,1-Mar-18,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Apr-18,1-Apr-18,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-May-18,1-May-18,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Jun-18,1-Jun-18,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Jul-18,1-Jul-18,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Aug-18,1-Aug-18,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Sep-18,1-Sep-18,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Oct-18,1-Oct-18,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Nov-18,1-Nov-18,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Dec-18,1-Dec-18,30,Rasband549 10 - YEAR           
+UIALINDON      ,1-Jan-19,1-Jan-19,30,Rasband549 10 - YEAR           
+POOLE3461      ,25-Apr-15,1-Apr-15,30,EPIV00000044077                

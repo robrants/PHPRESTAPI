@@ -1,0 +1,161 @@
+<?php
+class ONT_ZHONE extends ONT_Data{
+	
+	private $devices = array(); //devices to audit
+	private $oids = array(); //oids to run
+	private $returnDevices = array();
+	private $devicePorts = array(); //all ports on each device
+	private $community = 'ut0p1a5nmp';
+	
+	public function __construct(){
+		parent::__construct();
+	}
+	
+	//Bring over devices from the data object
+	private function getdevices($address_id){
+		$this->devices = $this->getSingleONT($address_id);
+		//$this->devices = $this->getAllActiveZhones();
+	}
+	//Get the needed oids for the given device
+	/*private function getoids($dev,$dec){ //Device and description
+		$this->oids = $this->getoids($dev,$dec);
+	}*/
+	
+	//Buid out parsers for each oid
+	private function parsePortNums($output){
+		$ports = array();
+		foreach($output as $key => $val){
+			//First lets grab the number off the key
+			$pnum = array_pop(explode('.',$key));
+			//Now lets grab the description off the value
+			$pdescr = $this->RunscrubValue(trim(array_pop(explode(':',$val))));
+			$port = array('pnum' => $pnum,'pdescr' => $pdescr);
+			array_push($ports,$port);
+		}
+		return $ports;
+	}
+	
+	private function parsePortVlans($output){
+		$Vlans = array();
+		foreach($output as $key => $val){
+			$vlan = array_pop(explode('.',$key));
+			$pdescr = $this->RunscrubValue(trim(array_pop(explode(':',$val))));			
+			$vlan = array('vlan' => $vlan, 'pdescr' => $pdescr);
+			array_push($Vlans,$vlan);
+		}
+		
+		return $Vlans;
+	}
+	
+	private function parseSpeed($output){
+		$Speed = array();
+		foreach($output as $key => $val){
+			$port = array_pop(explode('.',$key));
+			$s = trim(array_pop(explode(':',$val)));
+			$pspeed = array('port' => $port, 'speed' => $s);
+			array_push($Speed,$pspeed);
+		}
+		return $Speed;
+	}
+	
+	private function parseUpDown($output){
+		$UpDown = array();
+		foreach($output as $key => $val){
+			$port = array_pop(explode('.',$key));
+			$up = trim(array_pop(explode(':',$val)));
+			$ud = array('port' => $port, 'updown' => $up);
+			array_push($UpDown,$ud);
+		}
+		return $UpDown;
+	}
+	
+	private function parseInBytes($output){
+		$InBytes = array();
+		foreach($output as $key => $val){
+			$in = trim(array_pop(explode(':',$val)));
+			array_push($InBytes,$in);
+		}
+		return $InBytes;
+	}
+	
+	private function parseOutBytes($output){
+		//print_r($output);
+		$OutBytes = array();
+		foreach($output as $key => $val){
+			$out = trim(array_pop(explode(':',$val)));
+			array_push($OutBytes,$out);
+		}
+		return $OutBytes;
+	}
+	
+	private function parseUpTime($output){
+		//echo $output['DISMAN-EVENT-MIB::sysUpTimeInstance'];
+		//echo '<br>';
+		$tmp = explode(')',$output['DISMAN-EVENT-MIB::sysUpTimeInstance']);		
+		$upTime = $tmp[1];
+		return $upTime;
+	}
+	
+	private function pull_IP($mac){
+		$DHCP = new UtopiaDHCP();
+		return $DHCP->getIP($mac);
+	}
+	
+	private function AuditONTs($a){
+		if($a > 0 ){
+			$address_id = $a;
+			$this->devices = $this->getSingleONT($address_id);
+		}else $this->devices = $this->getAllActiveZhones();
+		foreach($this->devices as $ont){
+			$ip = $this->pull_IP($ont['mac']);
+			$this->oids = $this->getoids($ont['model_id'],'ZHONE%');						
+			foreach($this->oids as $oid){
+				$SNMP = new snmpDriver($ip,$this->community);
+				if($output = $SNMP->snmpGetter($oid['oid'])){
+					switch($oid['descr']){
+						case 'ZHONE LIST PORTS':						
+							$ont['ports'] = $this->parsePortNums($output);
+						break;
+						case 'ZHONE LIST PORT VLANS':
+							$ont['vlans'] = $this->parsePortVlans($output);
+						break;
+						case 'ZHONE PORT SPEED':
+							$ont['speed'] = $this->parseSpeed($output);
+						break;
+						case 'ZHONE PORT UP':
+							$ont['up'] = $this->parseUpDown($output);
+						break;
+						case 'ZHONE PORT INBYTE':
+							$ont['in'] = $this->parseInBytes($output);
+						break;
+						case 'ZHONE PORT OUTBYTE':
+							$ont['out'] = $this->parseOutBytes($output);
+						break;
+						case 'ZHONE UPTIME':
+							$ont['uptime'] = $this->parseUpTime($output);
+						break;		
+					}
+				}else {
+					$ont['failure'] = 'Failed Connection Check SNMP';
+					break;
+				}
+			}
+			array_push($this->returnDevices,$ont);			
+		}
+		
+	}
+	
+	public function RunAuditONTs($a=0){
+		if(is_array($a)){
+			$address_id = $a[0];
+		}else $address_id = 0;
+		$this->AuditONTs($a);
+		foreach($this->returnDevices as $device){
+			if($check = $this->pushONT($device) == -1) break;
+		}
+		return $check;
+	}
+		
+}
+
+?>

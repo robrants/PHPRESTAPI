@@ -1,0 +1,26 @@
+<?php
+class portsObj{
+	public $portIfindex;
+	public $port;
+	public $portType;
+	public $portDescr;
+	public $lldpUid;
+	public $remoteIP;
+	public $svid;
+	public $sdp;
+	public $remoteIfindex;
+	public $remoteSwitchId;
+	
+	/*public function __construct($pifidx,$port,$portType,$portDescr,$lldpUid,$remoteIP,$remoteIFinx,$remoteSite){
+		$this->portIfindex = $pifidx;
+		$this->port = $port;
+		$this->portType = $portType;
+		$this->portDescr = $portDescr;
+		$this->lldpUid $lldpUid;
+		$this->remoteIP = $remoteIP;
+		$this->remoteIfindex = $remoteIFinx;
+		$this->remoteSwitchId = $remoteSite;
+		
+	}*/
+}
+?>

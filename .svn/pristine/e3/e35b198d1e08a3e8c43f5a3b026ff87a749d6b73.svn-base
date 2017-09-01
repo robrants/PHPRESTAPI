@@ -1,0 +1,52 @@
+<?php
+	class buildSwitch extends snmpData{
+		public function __construct(){
+			parent::__construct();
+		}
+		private $switchObj;
+		private $lags;		
+		private $ports;
+		private $vlansServices;		
+		//private $chassInfo;
+		private $stack;
+		private $swData = array();
+		private $SNMP;
+		private $oids = array();
+		
+		private function buildStack(){}
+		
+		public function buildSwitch($switch){
+			$this->switchObj = new switchObj();
+			if(is_array($switch)){
+				$switchId = $switch[0];
+			}else $switchId = $switch;
+			$switchConn = $this->getSwitchConn($switchId); //get the host and community needed for this ADS
+			$this->switchObj->switch_id = $switchId;
+			$this->switchObj->local_ip = $switchConn['ip'];
+			//Build out the ports,lags and vlan_services			
+			$p = new buildPorts();
+			$l = new buildLags();
+			$s = new buildServiceVlans();
+			$c = new buildChassisInfo();
+			$st = new buildStack();
+			$this->ports = $p->BuildPorts($switchId);
+			$this->lags = $l->pullLag($switchId);
+			$this->vlansServices = $s->buildServiceVlan($switchId);
+			$this->stack = $st->buildChassis($switchId);
+			$this->switchObj->ports = $this->ports;
+			$this->switchObj->lags = $this->lags;
+			$this->switchObj->vlan_services = $this->vlansServices;
+			$this->switchObj->stack = $this->stack;
+			return $this->switchObj;
+			//$this->chassInfo = $c->buildChassis($switchId);
+			
+			//Build out the switch object
+			
+			/*
+			$this->SNMP = new SNMPDriver($switchConn['ip'],$switchConn['community']);
+			$this->oids = $this->getoids($switchConn['model'],'CHASSIS%'); // pull the needed oids for the make/model of this switch
+			*/
+			
+		}
+	}
+?>

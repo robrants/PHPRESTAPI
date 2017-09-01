@@ -1,0 +1,97 @@
+
+			<form>
+				<table class="table">
+					<tr>
+						<th colspan="2">Add Switch to Network</th>
+					</tr>
+					<tr>
+    					<td>Network Name</td>
+						<td> <input type="text" ng-model="input.network_name" /></td>
+					</tr>					
+					<tr>
+					<td>Switch Make/Model</td>
+						<td>
+								<select 
+									ng-model="input.model_id" ng-options="model.SWITCH_MODEL_ID as model.MM for model in mm">
+        						</select>
+						</td>
+					</tr>
+					<tr>
+						<td>Footprint</td>
+						<td><select ng-model="input.footprint_seq" ng-options="f.FOOTPRINT_SEQ as f.FOOTPRINT_ID for f in footprint">
+						</td> 
+					</tr>
+					<tr>
+						<td>Management Footprint</td>
+						<td><select ng-model="input.mngfootprint" ng-options="f.FOOTPRINT_ID as f.FOOTPRINT_ID for f in footprint">
+						</td> 
+					</tr>
+        			<tr>
+						<td>Address Id</td>
+						<td><input type="text" ng-model="input.address_id" /></td>
+					</tr>										        			
+					<tr>
+						<td>Role</td>
+						<td><select ng-model="input.role">								
+								<option value="ADS">ADS</option>
+								<option value="SR">SR</option>
+								<option value="RCS">RCS</option>
+								<option value="PAS">PAS</option>
+								<option value="DCS">DCS</option>
+								<option value="OOB">OOB</option>
+								<option value="Internal">Internal</option>
+								<option value="Aggregation">Aggregation</option>			
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>LAG</td>
+						<td><input type="text" ng-model="input.lag" /></td>
+					</tr>					
+					<tr>
+						<td>IP</td>
+						<td><input type="text" ng-model="input.ip_address" /></td>
+					</tr>
+					<tr>
+						<td>Status</td>
+						<td><select ng-model="input.status">
+								<option value="Active">Active</option>
+								<option value="Retired">Retired</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>SDP</td>
+						<td><input type="text" ng-model="input.SDP"/></td>
+					</tr>
+					<tr>
+						<td>Perle IP</td>
+						<td><input type="text" ng-model="input.perle_ip"/></td>
+					</tr>
+					<tr>
+						<td>UPS1 IP</td>
+						<td><input type="text" ng-model="input.ups1_ip"/></td>
+					</tr>
+					<tr>
+						<td>UPS2 IP</td>
+						<td><input type="text" ng-model="input.ups2_ip"/></td>
+					</tr>
+					<tr>
+						<td>OOB AP IP</td>
+						<td><input type="text" ng-model="input.oob_ap_ip"/></td>
+					</tr>
+					<tr>
+						<td>Stimulus</td>
+						<td><select ng-model="input.stimulus">
+        						<option value="Yes">Yes</option>
+								<option value="No">No</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2"><button class="btn btn-success" ng-click="ok();">Update Switch</button>
+										<button class="btn btn-danger" ng-click="cancel();">Cancel</button>
+						</td>
+					</tr>
+				</table>
+    		</form> 

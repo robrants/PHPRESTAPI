@@ -1,0 +1,7 @@
+<?php
+class lagObj{
+	public $lagIfIndex;
+	public $lagNum;
+	public $ports = array();	
+}
+?>

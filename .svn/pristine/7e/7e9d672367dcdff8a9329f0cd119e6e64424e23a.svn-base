@@ -1,0 +1,152 @@
+<?php
+
+class buildPorts extends snmpData{
+	public function __construct(){
+		parent::__construct();
+	}	
+	private $ports = array();
+	private $remoteIF = array(); //Store results from call for the remoteIF data
+	private $remoteIPs = array(); // Store results from call for remote IP
+	private $remoteNetwork = array(); //Store results from call for remote network
+	//private $host;
+	//private $community;
+	private $SNMP;
+	private $oids = array();
+	private $switchData;
+	
+	private function parsePorts(){
+		
+		foreach($this->switchData as $key =>$val){
+			$port = new portsObj();
+			$tmp = array();
+			$tmp = explode('.',$key);
+			//echo $tmp[1].'<br>';
+			$port->portIfindex = $tmp[1];
+			$tmp = array();
+			$tmp = explode(':',$val);
+			$tmp2 = explode(',',$tmp[1]);
+			if(count($tmp2) == 1){
+				$port->portDescr = $tmp[0];
+			}elseif(count($tmp2) == 2){
+				$port->port = $tmp2[0];
+				$port->portType = $tmp2[1];
+			}else{
+				$port->port = $tmp2[0];
+				$port->portType = $tmp2[1];
+				$port->portDescr = $tmp2[2];
+			}
+			/*echo 'portIfindex: '.$port->portIfindex.'<br>';
+			echo 'port: '.$port->port.'<br>';
+			echo 'portType: '.$port->portType.'<br>';
+			echo 'portDescr: '.$port->portDescr.'<br>';*/
+			array_push($this->ports,$port);			
+		}
+		unset($port);
+	}
+	
+	private function parseRemoteIfInx(){
+		foreach($this->switchData as $key => $val){
+			$tmp = explode('.',$key);
+			$rec['lldpuid'] = $tmp[10];
+			$rec['localIF'] = $tmp[11];
+			$tmp = array();
+			$tmp = explode(':',$val);
+			$rec['remoteIF'] = $tmp[1];
+			array_push($this->remoteIF,$rec);
+		}
+	}
+	
+	private function parseRemoteIP(){
+		foreach($this->switchData as $key => $val){
+			$tmp = explode('.',$key);
+			$rec['lldpuid'] = $tmp[10];
+			$rec['localIF'] = $tmp[11];
+			$rec['ip'] = implode('.',array_slice($tmp,-4));			
+			array_push($this->remoteIPs,$rec);
+		}
+		
+	}
+	
+	private function parseRemoteNetName(){
+		foreach($this->switchData as $key => $val){
+			$tmp = explode('.',$key);
+			$rec['lldpuid'] = $tmp[10];
+			$rec['localIF'] = $tmp[11];			
+			$tmp = array();
+			$tmp = explode(':',$val);
+			$rec['remoteSwitch'] = $tmp[1];
+			array_push($this->remoteNetwork,$rec);
+		}
+	}
+	
+	private function ConsolidatePortData(){
+		$x = 0;
+		foreach($this->ports as $p){
+			foreach($this->remoteIF as $r){
+				if($p->portIfindex == $r['localIF']){
+					$this->ports[$x]->lldpUid = $r['lldpuid'];
+					$this->ports[$x]->remoteIfindex = $r['remoteIF'];
+				}
+			}
+			foreach($this->remoteIPs as $ip){
+				if($ip['localIF'] == $p->portIfindex){
+					$this->ports[$x]->remoteIP = $ip['ip'];
+				}
+			}
+			foreach($this->remoteNetwork as $r){
+				if($r['localIF'] == $p->portIfindex){
+					$this->ports[$x]->remoteSwitchId = $r['remoteSwitch'];
+				}			
+			}
+			$x++;
+		}
+	}
+	
+	public function BuildPorts($switch){
+		$switchId = $switch[0];
+		echo $switchId.'<br>';
+		$switchConn = $this->getSwitchConn($switchId); //get the host and community needed for this ADS
+		$this->SNMP = new SNMPDriver($switchConn['ip'],$switchConn['community']);
+		$this->oids = $this->getoids($switchConn['model'],'PORTS%'); // pull the needed oids for the make/model of this switch
+		echo 'Total oids to run: '.count($this->oids).'<br><br>';
+		foreach($this->oids as $o){
+			$this->switchData = $this->SNMP->snmpGetter($o['oid']);
+			if($this->switchData === false) return -1;
+			switch($o['descr']){
+				case 'PORTS':
+					//echo 'Parsing Ports<br>';
+					$this->parsePorts();
+					echo 'Total Ports: '.count($this->ports).'<br>';
+				break;
+				case 'PORTS REMOTE INDEX':
+					//echo 'Parsing Remote Index<br>';
+					$this->parseRemoteIfInx();
+				break;
+				case 'PORTS REMOTE IP':
+					//echo 'Parsing Remote IPs<br>';
+					$this->parseRemoteIP();
+				break;
+				case 'PORTS REMOTE NAME':
+					//echo 'Parsing Remote Names<br>';
+					$this->parseRemoteNetName();
+				break;
+			}
+			
+		}
+		echo 'Total Ports on this Switch: '.count($this->ports).'<br>';
+		$this->ConsolidatePortData();
+		echo 'Post consolidation count is: '.count($this->ports).'<br>';
+		foreach($this->ports as $p){
+			echo 'portIfindex: '.$p->portIfindex.'<br>';
+			echo 'port: '.$p->port.'<br>';
+			echo 'portType: '.$p->portType.'<br>';
+			echo 'portDescr: '.$p->portDescr.'<br>';
+			echo 'lldpUid: '.$p->lldpUid.'<br>';
+			echo 'remoteIP: '.$p->remoteIP.'<br>';
+			echo 'remoteIfindex: '.$p->remoteIfindex.'<br>';
+			echo 'remoteSwitchId: '.$p->remoteSwitchId.'<br><br>';			
+		}
+		
+	}
+}
+?>

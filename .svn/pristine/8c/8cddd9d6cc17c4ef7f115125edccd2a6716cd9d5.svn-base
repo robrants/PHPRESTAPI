@@ -1,0 +1,21 @@
+<?php
+	return $globals = array('class'=>array(
+		'myOracle',
+		'Utopiamysql',
+		'CommonQueries',
+		'sysUtils',
+		'traits/crudBuilder',
+		'UtopiaDHCP',
+		'snmpData',
+		'objects/portsObj',
+		'objects/switchObj',
+		'objects/lagObj',		
+		'objects/serviceVlan',
+		'snmpDriver',
+		'buildPorts',
+		'buildLags',
+		'buildServiceVlans',
+		'buildSwitch',
+		'IFIndexWalker',
+		'ZoneWalker'));
+?>

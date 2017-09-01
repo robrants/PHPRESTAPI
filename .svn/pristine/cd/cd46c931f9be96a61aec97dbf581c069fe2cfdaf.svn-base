@@ -1,0 +1,52 @@
+<?php
+class buildChassisInfo extends snmpData{
+	public function __construct(){
+		parent::__construct();
+	}
+	private $Chassis = array();
+	private $chassisData;
+	private $SNMP;
+	private $oids = array();
+	
+	private function parseChassis(){
+		foreach($this->chassisData as $key => $val){
+			$chassis = new chassisInfo();
+			$tmp = explode('.',$key);
+			$chassis->hardwareIndex = array_pop($tmp);
+			$tmp = explode(':',$val);
+			$chassis->descr = array_pop($tmp);
+			array_push($this->Chassis,$chassis);
+		}		
+	}
+	
+	public function buildChassis($switch){
+		//check parameter to see if it came in as part of API or as class method call in other interface
+		if(is_array($switch)){
+			$switchId = $switch[0];
+		}else $switchId = $switch;
+		//echo $switchId.'<br>';
+		$switchConn = $this->getSwitchConn($switchId); //get the host and community needed for this ADS
+		$this->SNMP = new SNMPDriver($switchConn['ip'],$switchConn['community']);
+		$oids = $this->getoids($switchConn['model'],'HARDWARE%'); // pull the needed oids for the make/model of this switch
+		foreach($oids as $o){ //Ensure we run the OIDS in the correct order
+			switch($o['descr']){
+				case 'HARDWARE':
+					$this->oids[0] = $o;
+				break;				
+			}
+		}
+		for($x=0; $x<count($this->oids); $x++){
+			$this->chassisData = $this->SNMP->snmpGetter($this->oids[$x]['oid']);
+			if($this->chassisData === false) return -1;
+			switch($this->oids[$x]['descr']){
+				case 'HARDWARE':
+					//echo 'Parsing IFIndex and Lag Nums<br>';
+					$this->parseChassis();
+				break;				
+			}
+		}
+		
+		return $this->Chassis;
+	}
+}
+?>

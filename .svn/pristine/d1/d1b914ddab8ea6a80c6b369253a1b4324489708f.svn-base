@@ -1,0 +1,219 @@
+<?php
+//namespace data;
+
+use \Illuminate\support\Collection;
+//use Common\myOracle;
+
+class masterADSData extends myOracle{
+	use crudBuilder;
+	
+	protected $chasies 		= array();
+	protected $stack 		= array();
+	protected $switchslot 	= array();
+	protected $localports	= array();
+	
+	public function __construct(){
+		parent::__construct();
+	}
+	
+	public function pullSwitchSlots($switch){
+		$sql = "select * from blackr.switchslots where switch_id = ".$switch;
+		$r = $this->runQuery($sql);
+		while($row = oci_fetch_array($r)){
+			$rec = array('position'	=> $row['POSITION'],
+						'serial'	=> $row['SERIAL'],
+						'mac'		=> $row['MAC'],
+						'partnum'	=> $row['PARTNUM']);
+			array_push($this->switchslot,$rec);
+		}
+		return $this->switchslot;
+	}
+	
+	public function pullLocalPorts($switch,$serial){
+		$sql = "select * from blackr.localports where serial = '".$serial."' and switch_id = ".$switch;
+		$r = $this->runQuery($sql);
+		while($row = oci_fetch_array($r)){
+			$rec = array('ifindex' => $row['IFIDXID'],
+						'port'		=> $row['PORT'],
+						'porttype'	=> $row['PORTTYPE'],
+						'descr'		=> $row['DESCR']);
+			array_push($this->localports,$rec);
+		}
+		return $this->localports;
+	}
+	
+	public function putADS($data,$f,$t){
+		$data = json_decode($data,true);
+		if($f !== 0){ //Insert
+			$sql = $this->buildUpdate($t,$data,$f);
+					
+		}else{
+			switch($t){
+				case 'BLACKR.ADSSTACK':
+					$keys = 'stackid,';					
+					$keys .= implode(',',array_keys($data));
+					$vals = 'blackr.seq_adsstack.nextval';
+					$vals .= array_reduce($data,function($carry,$item){
+						$carry .= ",'".$item."'";
+						return $carry;
+					});
+					$sql = "insert into $t ($keys) values($vals)";
+				break;
+				case 'BLACKR.MASTERADS':					
+					$vals = 'blackr.seq_masterads.nextval';
+					$keys = 'switch_id,';
+					$keys .= implode(',',array_keys($data));
+					$vals .= array_reduce($data,function($carry,$item){
+						if(preg_match('/[a-zA-Z\.\:\-\_]/',$item)){
+							$carry .= ",'".$item."'";
+						}else $carry .= ",$item";
+						return $carry;
+					});
+					$sql = "insert into $t ($keys) values($vals)";
+				break;
+			}
+			//$sql = $this->buildInsert($t,$data);			
+		}
+		//echo $sql;
+		$results = $this->runInsert($sql);		
+		return $results;
+		
+	}
+	
+	public function deleteADS($f,$t){
+		$sql = $this->buildDelete($t,$f);
+		$results = $this->runIsert($sql);
+		return $results;
+	}
+	
+	public function pullStack($sid){
+		$sql = 'select * from BLACKR.ADSSTACK where switch_id = '.$sid;
+		$r = $this->runQuery($sql);
+		$x = 0;
+		while($row = oci_fetch_array($r)){
+			$rec = array(
+				'index'			=> $x,
+				'stackid' 		=> $row['STACKID'],
+				'switch_id'		=> $row['SWITCH_ID'],
+				'serial'		=> $row['SERIAL'],
+				'mac'			=> $row['MAC'],
+				'teng_lic'		=> $row['TENG_LIC'],
+				'teng_link'		=> $row['TENG_LINK'],
+				'numports'		=> $row['NUMPORTS'],
+				'model_id'		=> $row['MODEL_ID'],				
+				'reddcs'		=> $row['REDDCS'],
+				'yellowdcs' 	=> $row['YELLOWDCS'],
+				'redport1'		=> $row['REDPORT1'],
+				'redport2'		=> $row['REDPORT2'],
+				'yellowport1'	=> $row['YELLOWPORT1'],
+				'yellowport2'	=> $row['YELLOWPORT2']
+			);
+			array_push($this->stack,$rec);
+		}
+		return $this->stack;
+	}
+	
+	
+	public function exportChasies($filter=''){
+		$sql = "select m.*,sm.DESCRIPTION
+				from
+					BLACKR.MASTERADS m,
+					INV.SWITCH_MODEL sm
+				where
+    				m.model_id = sm.switch_model_id(+)";
+		if($filter != ''){
+			$sql .= " and (
+    				upper(m.network_name) like upper('%.$filter.%') or
+    				upper(m.ip_address) like upper('%.$filter.%') or
+    				upper(sm.description) like upper('%.$filter.%') or
+    				upper(m.status) like upper('%.$filter.%') or
+    				upper(m.mngfootprint) like upper('%.$filter.%') or
+					upper(m.sdp) like upper('%.$filter.%') or
+					upper(m.role) like upper('%.$filter.%') or
+					upper(m.ups1_ip) like upper('%.$filter.%') or
+					upper(m.ups2_ip) like upper('%.$filter.%') or
+					upper(perle_ip) like upper('%.$filter.%') or
+					upper(oob_ap_ip) like upper('%.$filter.%') or
+					upper(stimulus) like upper('%.$filter.%') or
+					upper(lag) like upper('%.$filter.%'))";
+			
+			
+		}
+		$r = $this->runQuery($sql);
+		$x = 0;
+		while($row = oci_fetch_array($r)){
+			$rec = array(
+				'index'					=> $x,
+				'switch_id'				=> $row['SWITCH_ID'],
+				'switchdesc'			=> $row['DESCRIPTION'],
+				'model_id'				=> $row['MODEL_ID'],
+				'network_name'			=> $row['NETWORK_NAME'],
+				'ip_address'			=> $row['IP_ADDRESS'],
+				'network_level'			=> $row['NETWORK_LEVEL'],
+				'transition_point_id'	=> $row['TRANSITION_POINT_ID'],
+				'date_installed'		=> $row['DATE_INSTALLED'],
+				'address_id'			=> $row['ADDRESS_ID'],
+				'footprint_seq'			=> $row['FOOTPRINT_SEQ'],
+				'status'				=> $row['STATUS'],
+				'mngfootprint'			=> $row['MNGFOOTPRINT'],
+				'SDP'					=> $row['SDP'],
+				'role'					=> $row['ROLE'],
+				'lag'					=> $row['LAG'],
+				'ups1_ip'				=> $row['UPS1_IP'],
+				'ups2_ip'				=> $row['UPS2_IP'],
+				'perle_ip'				=> $row['PERLE_IP'],
+				'oob_ap_ip'				=> $row['OOB_AP_IP'],
+				'stimulus'				=> $row['STIMULUS']
+			);	
+			$x++;
+			array_push($this->chasies,$rec);
+		}		
+		return $this->chasies;
+	}
+	
+	public function pullChasies($sid=0,$status='Active'){
+		//if($status='all'){echo '$status<br>';}
+		$sql = "select m.*,sm.MAKE||' '||sm.model description
+				from
+					BLACKR.MASTERADS m,
+					BLACKR.SWITCHTYPES sm
+				where
+					m.model_id = sm.model_id(+)";
+		if($sid != 0){ $sql .=" and switch_id= ".$sid;}
+		if($status !='all'){$sql .=" and status = '".$status."'";}
+		$sql .= ' order by m.network_name';
+		$r = $this->runQuery($sql);
+		$x = 0;
+		while($row = oci_fetch_array($r)){
+			$rec = array(
+				'index'					=> $x,
+				'switch_id'				=> $row['SWITCH_ID'],
+				'switchdesc'			=> $row['DESCRIPTION'],
+				'model_id'				=> $row['MODEL_ID'],
+				'network_name'			=> $row['NETWORK_NAME'],
+				'ip_address'			=> $row['IP_ADDRESS'],
+				'network_level'			=> $row['NETWORK_LEVEL'],
+				'transition_point_id'	=> $row['TRANSITION_POINT_ID'],
+				'date_installed'		=> $row['DATE_INSTALLED'],
+				'address_id'			=> $row['ADDRESS_ID'],
+				'footprint_seq'			=> $row['FOOTPRINT_SEQ'],
+				'status'				=> $row['STATUS'],
+				'mngfootprint'			=> $row['MNGFOOTPRINT'],
+				'SDP'					=> $row['SDP'],
+				'role'					=> $row['ROLE'],
+				'lag'					=> $row['LAG'],
+				'ups1_ip'				=> $row['UPS1_IP'],
+				'ups2_ip'				=> $row['UPS2_IP'],
+				'perle_ip'				=> $row['PERLE_IP'],
+				'oob_ap_ip'				=> $row['OOB_AP_IP'],
+				'stimulus'				=> $row['STIMULUS']
+			);	
+			$x++;
+			array_push($this->chasies,$rec);
+		}		
+		return $this->chasies;
+	}
+	
+	
+}
+?>

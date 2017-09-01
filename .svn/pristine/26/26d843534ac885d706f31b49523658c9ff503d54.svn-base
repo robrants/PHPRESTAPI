@@ -1,0 +1,26 @@
+<?php
+class switchObj{
+	public $switch_id;
+	public $local_ip;
+	public $ports = array();
+	public $lags = array();
+	public $vlan_services = array();
+	public $make;
+	public $serial;
+	public $mac;
+	public $firmware;
+	
+	public function __construct($swid,$ip,$ports,$lags,$vservice,$make,$serial,$mac,$firmware){
+		$this->switch_id = $swid;
+		$this->local_ip = $ip;
+		$this->ports = $ports;
+		$this->lags = $lags;
+		$this->vlan_services = $vservice;
+		$this->make = $make;
+		$this->serial = $serial;
+		$this->mac = $mac;
+		$this->firmware = $firmware;
+	}
+	
+}
+?>

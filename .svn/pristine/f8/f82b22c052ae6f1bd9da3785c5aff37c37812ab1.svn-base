@@ -1,0 +1,96 @@
+blackr.portErrors (switch_id,ifindex,in_error,in_discard,out_error,out_discard,create_date-timestamp)
+1.3.6.1.2.1.2.2.1.14 - Port if in errors
+1.3.6.1.2.1.2.2.1.13 – Port if in discards
+1.3.6.1.2.1.2.2.1.19 – Port if out discards
+1.3.6.1.2.1.2.2.1.20 - Port if out errors
+iso.3.6.1.2.1.2.2.1.14.1342177299 = Counter32: 0
+ifindex = 1342177299 # of errors = 0
+
+
+new column on localports speed
+port speed (in Mbps) - 1.3.6.1.2.1.31.1.1.1.15 - 
+iso.3.6.1.2.1.31.1.1.1.15.1025 = Gauge32: 10000
+ifindex = 1025 speed = 10000
+
+new column on localports state_change
+Port last state change  - 1.3.6.1.2.1.2.2.1.9  
+iso.3.6.1.2.1.2.2.1.9.1001 = Timeticks: (297706400) 34 days, 10:57:44.00
+ifindex = 1001 time = 34 days, 10:57:44.00 
+
+
+new column on localports mtu
+1.3.6.1.2.1.2.2.1.4 – Port mtu
+iso.3.6.1.2.1.2.2.1.4.7017 = INTEGER: 9216
+iso.3.6.1.2.1.2.2.1.4.7018 = INTEGER: 9216
+ifindex = 7017 mtu = 9216
+
+
+mac table
+
+blackr.macTable
+switch_id
+port_ifindex
+vlan/service
+mac
+create_date(timestamp)
+
+OMNI 6400,6450
+Mac Address Table - 1.3.6.1.4.1.6486.800.1.2.1.8.1.1.1.1.1
+iso.3.6.1.4.1.6486.800.1.2.1.8.1.1.1.1.1.1010.522.0.48.189.249.16.89 = Hex-STRING: 00 30 BD F9 10 59
+port ifindex = 1010 vlan = 522 mac-address = 00 30 BD F9 10 59
+
+SR 7750,7450
+
+Service Mac-Address Table - 1.3.6.1.4.1.6527.3.1.2.4.2.4.1.1
+iso.3.6.1.4.1.6527.3.1.2.4.2.4.1.1.156268.248.26.103.66.211.61 = Hex-STRING: F8 1A 67 42 D3 3D
+service_id = 156268 mac-address = F8 1A 67 42 D3 3D fdb_id = 248.26.103.66.211.61
+
+Service id and fdb_id to ifindex - 1.3.6.1.4.1.6527.3.1.2.4.2.4.1.5
+iso.3.6.1.4.1.6527.3.1.2.4.2.4.1.5.156268.240.142.219.2.44.54 = Gauge32: 1342177301
+service_id = 156268 fdb_id = 156268 ifindex = 1342177301
+If ifindex = 0, then entry belongs to SDP
+
+
+Link up and down
+
+add columns to localport admin_status, physical_status, port_state
+
+OMNI 6400,6450
+
+1.3.6.1.2.1.2.2.1.8 – Port oper status
+1.3.6.1.2.1.2.2.1.7 – Port admin status
+iso.3.6.1.2.1.2.2.1.8.7019 = INTEGER: 2
+iso.3.6.1.2.1.2.2.1.8.7020 = INTEGER: 1
+7019 is ifindex, 1 is up 2 is down
+
+SR 7750,7450
+
+Physical Link Status - 1.3.6.1.4.1.6527.3.1.2.2.4.2.1.36
+iso.3.6.1.4.1.6527.3.1.2.2.4.2.1.36.1.35684352 = INTEGER: 1
+1=up 2=down
+
+Admin Status - 1.3.6.1.4.1.6527.3.1.2.2.4.2.1.37
+iso.3.6.1.4.1.6527.3.1.2.2.4.2.1.37.1.35684352 = INTEGER: 2
+2= up 3= down
+
+Port State - 1.3.6.1.4.1.6527.3.1.2.2.4.2.1.39
+iso.3.6.1.4.1.6527.3.1.2.2.4.2.1.39.1.1342177380 = INTEGER: 5
+1=none 2=ghost 3=linkDown 4=linkup 5=up 
+
+
+vlan Assignment
+blackr.vlanAssignment
+switch_id,
+vlan,
+ifindex
+tag (1,2)
+
+OMNI 6400,6450
+
+Vlan Port Assignments - 1.3.6.1.4.1.6486.800.1.2.1.3.1.1.2.1.1.3 
+iso.3.6.1.4.1.6486.800.1.2.1.3.1.1.2.1.1.3.1249.2022 = INTEGER: 2
+iso.3.6.1.4.1.6486.800.1.2.1.3.1.1.2.1.1.3.1249.2023 = INTEGER: 2
+iso.3.6.1.4.1.6486.800.1.2.1.3.1.1.2.1.1.3.1249.2024 = INTEGER: 2
+1249 is vlan, 2022 is ifindex, result is tag type (1=untag 2=qtag)
+
+

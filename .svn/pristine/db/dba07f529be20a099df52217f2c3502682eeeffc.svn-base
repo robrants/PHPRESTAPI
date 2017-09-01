@@ -1,0 +1,187 @@
+<?php
+
+use \Illuminate\support\Collection;
+
+class firmWare extends CommonQueries{
+	private $user = 'admin';
+	private	$pass = 'm@r@ud3r';
+	private $footprint = array();
+	private $cmd = array('en','show system info');
+	private $Zhones = array();
+	private $FirmWare = array();
+	private $Frelease = array();
+	private $DATA;
+	private $x = 0;
+	private $SNMP;
+	private $TELNET;
+	private $DHCP;
+	private $SysUtils;
+	private $ONT = array();
+
+	public function __construct(){
+		parent::__construct();
+		$this->footprint = parent::getFootprint();
+		$this->DATA = new firmWareData();
+	}
+			
+	private function pullZoneInfo(){
+		$this->DHCP = new UtopiaDHCP();
+		foreach($this->Zhones as $zone){
+			//print_r($zone);
+			$ip = $this->DHCP->getIP($zone['mac']);
+			$this->SNMP = new SNMP(SNMP::VERSION_2c,$ip,'ut0p1a5nmp');
+			$release = $this->SNMP->get("5504.2.5.41.1.4.1.1.11.1.2");
+			
+			$release1 = explode('; ',$release);
+			
+			foreach($release1 as $rl){
+				
+				if(preg_match('/Release/',$rl,$r1)){
+					$release = explode(' ',$rl);					
+					break;
+				}
+			}
+			$release = $release[1];
+			$this->SNMP->close();
+			$this->FirmWare[$this->x] = array('adid' =>$zone['adid'],'IP' =>$ip,'model' => $zone['model'],'release' =>$release,'ISP' => $zone['ISP']);
+			if(isset($zone['footprint'])) $this->FirmWare[$this->x]['footprint'] = $zone['footprint'];
+			//Possible refactor into a collection or higher order function
+			$y = 0;			
+			foreach($this->Frelease as $rel){				
+				if($rel['model'] == $zone['model']){
+					$this->FirmWare[$this->x]['upgrade'][$y] = $rel;
+					$y++;
+					//break;
+				}
+			}
+			$this->x++;
+		}
+	}
+	
+	private function pullSpeeds(){
+		$this->DHCP = new UtopiaDHCP();
+		$ZhoneSpeed = array();
+		foreach($this->Zhones as $zone){
+			//print_r($zone);
+			$oid = array('port1'=>array('up'=>'1.3.6.1.4.1.5504.2.5.41.1.4.4.1.5.1.2','down'=>'1.3.6.1.4.1.5504.2.5.41.1.4.4.1.2.1.2'),
+						  'port2'=>array('up'=>'1.3.6.1.4.1.5504.2.5.41.1.4.4.1.5.1.3','down'=>'1.3.6.1.4.1.5504.2.5.41.1.4.4.1.2.1.3'),
+						  'port3'=>array('up'=>'1.3.6.1.4.1.5504.2.5.41.1.4.4.1.5.1.4','down'=>'1.3.6.1.4.1.5504.2.5.41.1.4.4.1.2.1.4'),
+						  'port4'=>array('up'=>'1.3.6.1.4.1.5504.2.5.41.1.4.4.1.5.1.5','down'=>'1.3.6.1.4.1.5504.2.5.41.1.4.4.1.2.1.5'),);
+			$speed = array('port1'=>array('up'=>'','down'=>''),
+						  'port2'=>array('up'=>'','down'=>''),
+						  'port3'=>array('up'=>'','down'=>''),
+						  'port4'=>array('up'=>'','down'=>''),);
+			$ip = $this->DHCP->getIP($zone['mac']);
+			$this->SNMP = new SNMP(SNMP::VERSION_2c,$ip,'ut0p1a5nmp');
+			foreach($oid as $port){
+				$pkey = key($port);
+				foreach($port as $key =>$val){
+					$speed[$pkey][$key] = $this->SNMP->get($val);
+				}
+			}			
+			$tmp = array('zhone' => $zone['mac'],'speed' =>$speed);
+			array_push($ZhoneSpeed,$tmp);
+		}
+		return $ZhoneSpeed;
+	}
+	
+	private function upgradeONT($ONT){
+		$this->TELNET = new PHPTelnet();
+		
+		$conCheck = $this->TELNET->Connect($ONT['IP'],$this->user,$this->pass);		
+		$this->TELNET->doCommand($this->user,$output);				
+		$this->TELNET->doCommand($this->pass,$output);				
+		$output = trim($output);
+		$output = substr($output,strlen($output)-1,strlen($output));
+		if($output == '>'){			
+			$this->TELNET->doCommand('en',$output);
+			$output = trim($output);
+			$output = substr($output,strlen($output)-1,strlen($output));
+			//echo $output."<br>";
+			if(trim($output) == '#'){				
+				$this->TELNET->doCommand('archive download-sw '.$ONT['URL'],$output);				
+				$output = trim($output);
+				$output = substr($output,strlen($output)-1,strlen($output));
+				sleep(240);
+				$this->TELNET->doCommand("\n",$output);
+				
+				///echo 'Before trim and string chomp'.$output.'<br>';
+				$output = trim($output);
+				//echo '['.$output.']<br>';
+				preg_match('/successful/',$output,$m);
+				//echo $m."<br>";
+				if(count($m)>0){
+					//echo 'Success!<br>';
+					$output = substr($output,strlen($output)-1,strlen($output));
+				}else return -1;
+				if(trim($output) == '#'){
+					$this->TELNET->doCommand('reload sw',$output);
+					echo 'sleeping now<Br>';
+					sleep(240);
+					$this->SysUtils = new sysUtils();
+					$check = $this->SysUtils->ping($ONT['IP']);
+					if($check) return 1;
+				}else return -1;
+			} else return -1;
+		}else return -1;						
+	}
+	//End Private Functions and Begin Public Interfaces
+	
+	public function getFWByFootprint($parms){
+		$f = $parms[0]; //Footprint
+		$d = $parms[1]; //Device Type
+		$p = $parms[2]; //Product Type
+		$this->Frelease = $this->DATA->getRelease($d);
+		$this->Zhones = $this->DATA->getFirmwareFootprint($f,$d,$p);
+		$this->pullZoneInfo();		
+		return $this->FirmWare;
+	}
+	
+	public function getFWAll($start,$end,$d){
+		$this->Zhones = $this->DATA->getfirmwareAll($start,$end,$d);
+		$this->pullZoneInfo();
+		return $this->FirmWare;
+	}
+	
+	public function getFPs(){
+		return $this->footprint;
+	}
+	
+	public function getONT($ONTS){		
+		$this->ONT = $this->DATA->buildONT($ONTS);		
+		return $this->ONT;
+	}
+	
+	public function runUpdate($ONT){
+		
+		if($this->upgradeONT($ONT) == 1){
+			return 1;
+		}else return -1;
+		
+	}
+	
+	public function getZoneSpeeds(){
+		$this->Zhones = $this->DATA->getResZones();
+		echo 'Data retreived<br>';
+		$zoneSpeed = $this->pullSpeeds();
+		return json_encode($zoneSpeed);
+	}
+	
+	public function loadQue($input,$parm){		
+		
+		$que = $parm[0];		
+		$input = json_decode($input,true);		
+		//$onts = collect($input);
+		//$firmware = $onts->map(function($ont){
+		//	return $this->getONT($ont);
+		//});
+		$firmware = collect($input);
+		$results = $firmware->map(function($f,$que) use ($que){
+			$queMgr = new \Pheanstalk\Pheanstalk('127.0.0.1');
+			if($queMgr->useTube($que)->put(json_encode($f))) return 1;
+			else return -1;
+		});
+		return $results;
+	}
+}
+?>

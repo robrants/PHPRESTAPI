@@ -1,0 +1,12 @@
+<?php
+class switchObj{
+	public $switch_id;
+	public $local_ip;
+	public $ports = array();
+	public $lags = array();
+	public $vlan_services = array();
+	public $stack = array();
+	public $make;	
+	public $firmware;			
+}
+?>
